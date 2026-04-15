@@ -18,15 +18,13 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-border py-4"
-          : "bg-transparent py-6"
+        scrolled ? "bg-background/90 backdrop-blur-md border-b border-border py-4" : "bg-transparent py-6"
       }`}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <span className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors">
-            Requisor.AI
+            Citrus Innovations
           </span>
         </Link>
 
