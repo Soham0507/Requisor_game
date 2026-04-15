@@ -4,6 +4,15 @@
 
 pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
 
+## Artifacts
+
+### Citrus Innovations Landing Page (`artifacts/citrus-landing`)
+- A modern, dark-themed game development landing page for Citrus Innovations
+- Built with React + Vite, Tailwind CSS, and Framer Motion
+- Sections: Navbar, Hero, Games (3 cards), Services (4 services), CTA, Footer
+- No backend required — pure frontend presentation site
+- Preview path: `/`
+
 ## Stack
 
 - **Monorepo tool**: pnpm workspaces

@@ -1,0 +1,113 @@
+Build a modern, professional game development landing page using:
+
+Tech Stack:
+- React (functional components)
+- Tailwind CSS
+- Framer Motion
+
+Design Style:
+- Dark theme
+- Minimal, premium, startup-style UI
+- Smooth animations
+
+----------------------------------
+
+1. NAVBAR (IMPORTANT)
+
+Create a fixed top navigation bar with:
+
+Left side:
+- Logo text: "Citrus Innovations" (styled bold and premium)
+
+Right side menu items:
+- Home
+- Games
+- Services
+- Contact
+
+Features:
+- Sticky navbar (fixed at top)
+- Slight background blur (backdrop-blur)
+- Transparent initially, becomes darker on scroll
+- Smooth hover effects on menu items
+- Mobile responsive with hamburger menu
+
+----------------------------------
+
+2. HERO SECTION
+
+- Headline: "We Build Interactive Games & Experiences"
+- Subheading: "Engaging, scalable, and built for brands, apps, and campaigns"
+- Buttons:
+  - "View Our Games"
+  - "Contact Us"
+- Add subtle animation (fade + slide)
+
+----------------------------------
+
+3. GAMES SECTION
+
+Create 3 animated cards:
+
+1. Basketball Game
+- Gesture-based controls
+- Real-time scoring
+- Smooth gameplay
+
+2. Soccer Game
+- Same core logic as basketball
+- Fast-paced gameplay
+- Customizable for clients
+
+3. Cyber Adventure Game
+- Temple-run style endless runner
+- Cybersecurity theme (phishing, malware, etc.)
+- Educational + engaging
+
+Each card should:
+- Have hover animation
+- Slight glow effect
+- Rounded corners
+- Shadow
+
+----------------------------------
+
+4. SERVICES SECTION
+
+Show services in grid:
+
+- Custom Game Development
+- Gamification for Marketing
+- UI/UX Design
+- Game Reskinning
+
+----------------------------------
+
+5. CTA SECTION
+
+- Text: "Want a game like this for your brand?"
+- Button: "Get in Touch"
+
+----------------------------------
+
+6. FOOTER
+
+- Show: "© 2026 Citrus Innovations"
+- Social links (dummy icons)
+- Clean minimal design
+
+----------------------------------
+
+Extra Requirements:
+
+- Use Tailwind spacing and grid properly
+- Add Framer Motion animations (fade-in, stagger)
+- Fully responsive (mobile + desktop)
+- Clean and readable code
+- Use reusable components (Navbar, GameCard, etc.)
+
+----------------------------------
+
+Output:
+- Full React component code in one file
+- Ready to run in Replit
