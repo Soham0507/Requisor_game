@@ -19,9 +19,30 @@ export function Hero() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-4xl"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-medium tracking-wide text-white/80 uppercase">AAA Studio Quality</span>
+          <div className="relative inline-flex items-center justify-center mb-8">
+
+            {/* OUTER FLOW (animated aura) */}
+            <span className="absolute inset-0 rounded-full 
+              bg-blue-500/30 blur-xl 
+              animate-[ping_2.5s_infinite]" />
+
+            {/* SECOND LAYER (slower softer glow) */}
+            <span className="absolute inset-0 rounded-full 
+              bg-blue-400/20 blur-2xl 
+              animate-[pulse_3s_infinite]" />
+
+            {/* MAIN BADGE */}
+            <div className="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
+              bg-white/5 border border-blue-400/30 backdrop-blur-md
+              shadow-[0_0_20px_rgba(59,130,246,0.6)]">
+
+              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse 
+                shadow-[0_0_10px_rgba(59,130,246,0.9)]" />
+
+              <span className="text-xs font-semibold tracking-wider text-blue-200 uppercase">
+                Web Based Games
+              </span>
+            </div>
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.1] text-white mb-6">
