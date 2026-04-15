@@ -49,7 +49,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --animate-flow: flow 3s ease-out infinite;
+  --animate-flow: flow 2s ease-out infinite;
 }
 
 @keyframes flow {
@@ -58,11 +58,11 @@
     opacity: 0.6;
   }
   70% {
-    transform: scale(1.8);
+    transform: scale(1.2);
     opacity: 0.2;
   }
   100% {
-    transform: scale(2.2);
+    transform: scale(1.4);
     opacity: 0;
   }
 }
