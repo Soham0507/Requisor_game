@@ -5,11 +5,10 @@ export function Hero() {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-background" />
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 opacity-50" />
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-secondary/15 rounded-full blur-[150px] translate-x-1/3 translate-y-1/3 opacity-50" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none" />
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="hero-cyber-bg" />
+        <div className="hero-scanline" />
+        <div className="hero-glitch" />
       </div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
@@ -21,23 +20,23 @@ export function Hero() {
         >
           <div className="relative inline-flex items-center justify-center mb-8">
 
-            {/* OUTER FLOW (animated aura) */}
+            {/* FLOW LAYER 1 */}
             <span className="absolute inset-0 rounded-full 
-              bg-blue-500/30 blur-xl 
-              animate-[ping_2.5s_infinite]" />
+              bg-blue-500/30 blur-xl animate-flow" />
 
-            {/* SECOND LAYER (slower softer glow) */}
+            {/* FLOW LAYER 2 (delayed for continuous wave) */}
             <span className="absolute inset-0 rounded-full 
-              bg-blue-400/20 blur-2xl 
-              animate-[pulse_3s_infinite]" />
+              bg-blue-400/50 b animate-flow 
+              [animation-delay:0.5s]" />
 
             {/* MAIN BADGE */}
             <div className="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
               bg-white/5 border border-blue-400/30 backdrop-blur-md
-              shadow-[0_0_20px_rgba(59,130,246,0.6)]">
+              shadow-[0_0_25px_rgba(59,130,246,0.6)]
+              transition-all duration-200 hover:shadow-[0_0_45px_rgba(59,130,246,1)]">
 
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse 
-                shadow-[0_0_10px_rgba(59,130,246,0.9)]" />
+                shadow-[0_0_12px_rgba(59,130,246,0.9)]" />
 
               <span className="text-xs font-semibold tracking-wider text-blue-200 uppercase">
                 Web Based Games
