@@ -1,96 +1,138 @@
-<canvas id="grid"></canvas>
+import { useEffect, useRef } from "react";
 
-    <script>
-      const canvas = document.getElementById("grid");
-      const ctx = canvas.getContext("2d");
+const SQUARE_SIZE = 80;
 
-      let width = canvas.width = window.innerWidth;
-      let height = canvas.height = window.innerHeight;
+interface Cell {
+  x: number;
+  y: number;
+  alpha: number;
+  fading: boolean;
+  lastTouched: number;
+}
 
-      let mouse = { x: -9999, y: -9999 };
-      const squareSize = 80;
-      const grid = [];
+export function CursorGrid() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-      function initGrid() {
-        grid.length = 0;
-        for (let x = 0; x < width; x += squareSize) {
-          for (let y = 0; y < height; y += squareSize) {
-            grid.push({
-              x,
-              y,
-              alpha: 0,
-              fading: false,
-              lastTouched: 0,
-            });
-          }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d")!;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const mouse = { x: -9999, y: -9999 };
+    let grid: Cell[] = [];
+
+    function initGrid() {
+      grid = [];
+      for (let x = 0; x < width; x += SQUARE_SIZE) {
+        for (let y = 0; y < height; y += SQUARE_SIZE) {
+          grid.push({ x, y, alpha: 0, fading: false, lastTouched: 0 });
         }
       }
+    }
 
-      function getCellAt(x, y) {
-        return grid.find(cell =>
-          x >= cell.x && x < cell.x + squareSize &&
-          y >= cell.y && y < cell.y + squareSize
-        );
-      }
+    function getCellAt(x: number, y: number): Cell | undefined {
+      return grid.find(
+        (c) =>
+          x >= c.x &&
+          x < c.x + SQUARE_SIZE &&
+          y >= c.y &&
+          y < c.y + SQUARE_SIZE
+      );
+    }
 
-      window.addEventListener("resize", () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        initGrid();
-      });
+    function isOverHero(clientY: number): boolean {
+      const hero = document.getElementById("home");
+      if (!hero) return false;
+      const rect = hero.getBoundingClientRect();
+      return clientY >= rect.top && clientY <= rect.bottom;
+    }
 
-      window.addEventListener("mousemove", (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-
-        const cell = getCellAt(mouse.x, mouse.y);
-        if (cell && cell.alpha === 0) {
-          cell.alpha = 1;
-          cell.lastTouched = Date.now();
-          cell.fading = false;
-        }
-      });
-
-      function drawGrid() {
-        ctx.clearRect(0, 0, width, height);
-        const now = Date.now();
-
-        for (let i = 0; i < grid.length; i++) {
-          const cell = grid[i];
-
-          // Start fading after 500ms
-          if (cell.alpha > 0 && !cell.fading && now - cell.lastTouched > 500) {
-            cell.fading = true;
-          }
-
-          if (cell.fading) {
-            cell.alpha -= 0.02;
-            if (cell.alpha <= 0) {
-              cell.alpha = 0;
-              cell.fading = false;
-            }
-          }
-
-          if (cell.alpha > 0) {
-            const centerX = cell.x + squareSize / 2;
-            const centerY = cell.y + squareSize / 2;
-
-            const gradient = ctx.createRadialGradient(
-              centerX, centerY, 5,
-              centerX, centerY, squareSize
-            );
-            gradient.addColorStop(0, `rgba(0, 255, 204, ${cell.alpha})`);
-            gradient.addColorStop(1, `rgba(0, 255, 204, 0)`);
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 1.3;
-            ctx.strokeRect(cell.x + 0.5, cell.y + 0.5, squareSize - 1, squareSize - 1);
-          }
-        }
-
-        requestAnimationFrame(drawGrid);
-      }
-
+    function onResize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
       initGrid();
-      drawGrid();
-    </script>
+    }
+
+    function onMouseMove(e: MouseEvent) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+
+      if (isOverHero(mouse.y)) return;
+
+      const cell = getCellAt(mouse.x, mouse.y);
+      if (cell && cell.alpha === 0) {
+        cell.alpha = 1;
+        cell.lastTouched = Date.now();
+        cell.fading = false;
+      }
+    }
+
+    let animId: number;
+
+    function drawGrid() {
+      ctx.clearRect(0, 0, width, height);
+      const now = Date.now();
+
+      for (const cell of grid) {
+        if (cell.alpha > 0 && !cell.fading && now - cell.lastTouched > 500) {
+          cell.fading = true;
+        }
+
+        if (cell.fading) {
+          cell.alpha -= 0.02;
+          if (cell.alpha <= 0) {
+            cell.alpha = 0;
+            cell.fading = false;
+          }
+        }
+
+        if (cell.alpha > 0) {
+          const cx = cell.x + SQUARE_SIZE / 2;
+          const cy = cell.y + SQUARE_SIZE / 2;
+          const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, SQUARE_SIZE);
+          grad.addColorStop(0, `rgba(0, 255, 204, ${cell.alpha})`);
+          grad.addColorStop(1, `rgba(0, 255, 204, 0)`);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.3;
+          ctx.strokeRect(
+            cell.x + 0.5,
+            cell.y + 0.5,
+            SQUARE_SIZE - 1,
+            SQUARE_SIZE - 1
+          );
+        }
+      }
+
+      animId = requestAnimationFrame(drawGrid);
+    }
+
+    window.addEventListener("resize", onResize);
+    window.addEventListener("mousemove", onMouseMove);
+    initGrid();
+    drawGrid();
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      cancelAnimationFrame(animId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        pointerEvents: "none",
+        zIndex: 40,
+      }}
+    />
+  );
+}
