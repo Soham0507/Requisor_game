@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ParticleText } from "@/components/ParticleText";
 
 function FloatingController() {
   return (
@@ -171,13 +172,8 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Heading */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.05] text-white mb-6">
-            We Build Interactive<br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-500">
-              Games & Experiences
-            </span>
-          </h1>
+          {/* Particle heading */}
+          <ParticleText />
 
           <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
             Engaging, scalable, and built for brands, apps, and campaigns.
