@@ -1,26 +1,26 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Code2, Target, PenTool, RefreshCcw } from "lucide-react";
+import { Code2, Target, PenTool, RefreshCcw, Users, Zap } from "lucide-react";
 
 const services = [
   {
-    title: "Custom Game Development",
-    description: "End-to-end development of bespoke games tailored to your brand's unique IP and narrative.",
-    icon: Code2,
-  },
-  {
-    title: "Gamification for Marketing",
-    description: "Boost user engagement and conversion rates by integrating game mechanics into your marketing campaigns.",
+    title: "Sports-Based Interactive Games",
+    description: "We design fast-paced basketball and soccer games tailored for booth environments, focused on quick engagement, intuitive controls, and high replay value.",
     icon: Target,
   },
   {
-    title: "UI/UX Design",
-    description: "Sleek, intuitive, and modern interfaces that make your games not just playable, but beautiful.",
-    icon: PenTool,
+    title: "Endless Runner Experiences",
+    description: "Inspired by cyber adventure gameplay, we build immersive endless runner games that keep users engaged while delivering brand messages through interactive storytelling.",
+    icon: Zap,
   },
   {
-    title: "Game Reskinning",
-    description: "Take our proven, high-performing game engines and reskin them with your brand's visual identity instantly.",
+    title: "Booth Engagement Solutions",
+    description: "Our games are specifically built for exhibitions and activations — optimized for quick play sessions, crowd attraction, and maximum on-ground interaction.",
+    icon: Users,
+  },
+  {
+    title: "Reusable Game Engines",
+    description: "We develop scalable game logic that can be quickly adapted across multiple themes, allowing faster delivery and cost-effective customization for different brands.",
     icon: RefreshCcw,
   },
 ];

@@ -122,19 +122,19 @@ export function Hero() {
       className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-black"
     >
       {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-[#030712] to-black" />
+       <div className="absolute inset-0 bg-gradient-to-b from-black via-[#030712] to-black" />
 
-      {/* Parallax neon grid */}
+  
       <motion.div
         className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.05)_1px,transparent_1px)] bg-[size:60px_60px]"
         style={{ y: gridY }}
       />
 
-      {/* Glow orbs */}
+      
       <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[140px] animate-pulse" />
 
-      {/* Floating game elements */}
+  
       <FloatingController />
       <FloatingBall x="10%" y="20%" size={60} delay={0} color="radial-gradient(circle, #f97316, transparent)" />
       <FloatingBall x="80%" y="60%" size={40} delay={1.5} color="radial-gradient(circle, #a855f7, transparent)" />
@@ -146,14 +146,16 @@ export function Hero() {
       <PixelStar x="35%" y="12%" delay={0.5} />
       <PixelStar x="72%" y="72%" delay={1.5} />
 
-      {/* HUD elements */}
+    
       <HUDPanel />
       <ScorePopup />
 
-      {/* Scanlines overlay */}
+      
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, black 2px, black 4px)" }} />
+        style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, black 2px, black 4px)" }} /> 
 
+      {/* <video src="/public/home/home.mp4" autoPlay muted className="absolute inset-0 w-full h-full object-cover" /> */}
+      
       {/* CONTENT */}
       <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
         <motion.div

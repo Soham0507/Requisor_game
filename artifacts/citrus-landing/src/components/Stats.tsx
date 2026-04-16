@@ -23,10 +23,9 @@ function useCounter(end: number, duration: number = 1800) {
 }
 
 const stats = [
-  { rank: "01", label: "Games Built", end: 24, suffix: "+", accent: "text-orange-400", glow: "shadow-[0_0_20px_rgba(249,115,22,0.2)]" },
-  { rank: "02", label: "Active Players", end: 2, suffix: "M+", accent: "text-cyan-400", glow: "shadow-[0_0_20px_rgba(34,211,238,0.2)]" },
-  { rank: "03", label: "Brands Served", end: 50, suffix: "+", accent: "text-purple-400", glow: "shadow-[0_0_20px_rgba(168,85,247,0.2)]" },
-  { rank: "04", label: "Client Rating", end: 4, suffix: ".9 / 5", accent: "text-green-400", glow: "shadow-[0_0_20px_rgba(74,222,128,0.2)]" },
+  { rank: "01", label: "Games Built", end: 3, suffix: "", accent: "text-orange-400", glow: "shadow-[0_0_20px_rgba(249,115,22,0.2)]" },
+  { rank: "02", label: "Brands Served", end: 3, suffix: "", accent: "text-purple-400", glow: "shadow-[0_0_20px_rgba(168,85,247,0.2)]" },
+  { rank: "03", label: "Client Rating", end: 4, suffix: ".9 / 5", accent: "text-green-400", glow: "shadow-[0_0_20px_rgba(74,222,128,0.2)]" },
 ];
 
 function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
@@ -39,10 +38,13 @@ function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className={`relative group bg-white/[0.03] border border-white/8 rounded-2xl p-8 hover:bg-white/[0.06] transition-all duration-300 ${stat.glow} hover:border-white/15 overflow-hidden`}
+      className={`relative group w-[280px] sm:w-[325px] 
+      bg-white/[0.03] border border-white/8 rounded-2xl p-8 
+      hover:bg-white/[0.06] transition-all duration-300 
+      ${stat.glow} hover:border-white/15 overflow-hidden`}
     >
       {/* Rank badge */}
-      <div className="font-mono text-white/10 text-5xl font-bold absolute top-4 right-6 select-none pointer-events-none group-hover:text-white/5 transition-colors">
+      <div className="font-mono text-white/10 text-5xl font-bold absolute top-4  select-none pointer-events-none group-hover:text-white/5 transition-colors">
         #{stat.rank}
       </div>
 
@@ -93,12 +95,14 @@ export function Stats() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             Leaderboard
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white">
+          <h2 className="text-3xl md:text-5xl mt-10 font-bold text-white">
             By the Numbers
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-wrap justify-center gap-6 max-w-6xl mx-auto"> 
+          
+          
           {stats.map((stat, i) => (
             <StatCard key={i} stat={stat} index={i} />
           ))}
