@@ -160,7 +160,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-5xl"
+          className="w-full"
         >
           {/* Badge */}
           <div className="relative inline-flex items-center justify-center mb-8">
@@ -172,15 +172,21 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Particle heading */}
-          <ParticleText />
+          {/* Heading */}
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-normal tracking-tight leading-[1.05] text-white mb-6" style={{fontFamily:"'PixelGamer', monospace"}}>
+            Interactive Games<br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-500">
+              Built for Booth Experiences
+            </span>
+          </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Engaging, scalable, and built for brands, apps, and campaigns.
+          {/* Subtext */}
+          <p className="text-lg md:text-xl text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed">
+            Web-based interactive games designed for exhibition booths, brand activations, and on-ground engagement.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-20 mb-16">
             <a
               href="#games"
               className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-semibold rounded-xl shadow-[0_0_25px_rgba(249,115,22,0.5)] hover:shadow-[0_0_40px_rgba(249,115,22,0.8)] transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 justify-center"

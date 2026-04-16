@@ -39,7 +39,7 @@ export function ParticleText() {
     async function init() {
       const W = Math.min(wrap!.clientWidth || 1200, 1400);
 
-      let fontSize = Math.max(Math.min(W / 9, 110), 28);
+      let fontSize = Math.max(Math.min(W / 9, 110), 38);
       const FONT_FAMILY = "'PixelGamer', monospace";
 
       await document.fonts.ready;

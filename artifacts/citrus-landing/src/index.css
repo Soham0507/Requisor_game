@@ -8,6 +8,14 @@
   font-style: normal;
   font-display: block;
 }
+
+@font-face {
+  font-family: 'gGameTC';
+  src: url('/fonts/gGameTC.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
@@ -142,5 +150,6 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'gGameTC', sans-serif;
   }
 }

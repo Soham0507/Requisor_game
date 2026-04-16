@@ -23,7 +23,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors">
+          <span className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors" style={{fontFamily:"'PixelGamer', monospace"}}>
             Citrus Innovations
           </span>
         </Link>
