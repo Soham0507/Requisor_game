@@ -6,11 +6,11 @@ export function Footer() {
     <footer className="bg-background border-t border-white/10 py-12">
       <div className="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-white font-bold text-xl tracking-tight">
-          Citrus Innovations
+        Requisor.AI
         </div>
         
         <div className="text-muted-foreground text-sm">
-          © 2026 Citrus Innovations. All rights reserved.
+          © 2026 Requisor.AI . All rights reserved.
         </div>
 
         <div className="flex items-center gap-4">

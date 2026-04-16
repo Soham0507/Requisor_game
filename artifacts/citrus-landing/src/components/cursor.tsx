@@ -43,13 +43,6 @@ export function CursorGrid() {
       );
     }
 
-    function isOverHero(clientY: number): boolean {
-      const hero = document.getElementById("home");
-      if (!hero) return false;
-      const rect = hero.getBoundingClientRect();
-      return clientY >= rect.top && clientY <= rect.bottom;
-    }
-
     function onResize() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
@@ -59,8 +52,6 @@ export function CursorGrid() {
     function onMouseMove(e: MouseEvent) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-
-      if (isOverHero(mouse.y)) return;
 
       const cell = getCellAt(mouse.x, mouse.y);
       if (cell && cell.alpha === 0) {

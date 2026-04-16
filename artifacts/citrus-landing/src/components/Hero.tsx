@@ -110,21 +110,115 @@ function ScorePopup() {
   );
 }
 
+function FloatingImage({
+  src,
+  size,
+  delay,
+  initialX,
+  initialY,
+  depth = 40,
+  mouse,
+}: {
+  src: string;
+  size: string;
+  delay: number;
+  initialX: string;
+  initialY: string;
+  depth?: number;
+  mouse: { x: number; y: number };
+}) {
+  return (
+    <motion.img
+      src={src}
+      alt="game asset"
+      className="absolute pointer-events-none select-none 
+      drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]"
+      style={{
+        width: size,
+        left: initialX,
+        top: initialY,
+      }}
+
+      // 🎬 ENTRY
+      initial={{
+        opacity: 0,
+        scale: 0.5,
+        rotate: -30,
+        y: 80,
+      }}
+
+      animate={{
+        opacity: 0.9,
+        scale: 1,
+        rotate: 0,
+
+        // 🌊 floating motion
+        y: [0, -20, 0],
+        x: [0, 15, 0],
+
+        // 🧠 PARALLAX (position shift)
+        translateX: mouse.x * depth,
+        translateY: mouse.y * depth,
+
+        // 🎮 3D TILT
+        rotateX: mouse.y * 15,
+        rotateY: mouse.x * 15,
+      }}
+
+      transition={{
+        delay,
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
+
+        y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+        x: { duration: 7, repeat: Infinity, ease: "easeInOut" },
+
+        rotateX: { type: "spring", stiffness: 60, damping: 15 },
+        rotateY: { type: "spring", stiffness: 60, damping: 15 },
+        translateX: { type: "spring", stiffness: 50 },
+        translateY: { type: "spring", stiffness: 50 },
+      }}
+    />
+  );
+}
+
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const [mouse, setMouse] = React.useState({ x: 0, y: 0 });
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+    setMouse({ x, y });
+  };
   return (
-    <section
-      id="home"
-      ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-black"
-    >
+      <section
+        id="home"
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-black"
+      >
       {/* Base gradient */}
        <div className="absolute inset-0 bg-gradient-to-b from-black via-[#030712] to-black" />
 
-  
+        <FloatingImage src="/ball/ball.png" size="90px" delay={0.2} initialX="10%" initialY="20%" mouse={mouse} depth={20} />
+
+        <FloatingImage src="/ball/basket.png" size="100px" delay={0.5} initialX="80%" initialY="65%" mouse={mouse} depth={50} />
+
+        <FloatingImage src="/ball/console.png" size="85px" delay={0.8} initialX="60%" initialY="10%" mouse={mouse} depth={30} />
+
+        <FloatingImage src="/ball/energy.png" size="95px" delay={1.1} initialX="25%" initialY="75%" mouse={mouse} depth={50} />
+
+        <FloatingImage src="/ball/exe.png" size="200px" delay={1.1} initialX="5%" initialY="50%" mouse={mouse} depth={40} />
+        
+        <FloatingImage src="/ball/horn.png" size="80px" delay={1.4} initialX="75%" initialY="30%" mouse={mouse} depth={40} />
+      
       <motion.div
         className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.05)_1px,transparent_1px)] bg-[size:60px_60px]"
         style={{ y: gridY }}

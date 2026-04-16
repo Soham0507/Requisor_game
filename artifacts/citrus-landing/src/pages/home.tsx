@@ -16,7 +16,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <ScrollTicker />
+        {/* <ScrollTicker /> */}
         <Stats />
         <Games />
         <Services />

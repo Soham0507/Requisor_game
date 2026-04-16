@@ -29,7 +29,7 @@ export function Navbar() {
             className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors"
             style={{ fontFamily: "'PixelGamer', monospace" }}
           >
-            Citrus Innovations
+            RequisorAI
           </span>
         </Link>
 

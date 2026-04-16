@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Citrus Innovations"
+title = "Requisor.AI"
 version = "1.0.0"
 id = "artifacts/citrus-landing"
 router = "path"
