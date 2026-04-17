@@ -1,5 +1,5 @@
 import React from "react";
-import { SiX, SiGithub, SiDribbble, SiInstagram } from "react-icons/si";
+import { SiX, SiGithub, SiDribbble, SiInstagram, SiGmail  } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa6";
 
 export function Footer() {
@@ -26,10 +26,11 @@ export function Footer() {
         {/* Social Icons */}
         <div className="flex items-center gap-4">
           {[
-            { icon: <SiX size={18} />, link: "#" },
-            { icon: <SiGithub size={18} />, link: "#" },
+            { icon: <SiX size={18} />, link: "https://x.com/Requisor_AI" },
+           
             { icon: <SiInstagram size={18} />, link: "#" },
-            { icon: <SiDribbble size={18} />, link: "#" },
+            { icon: <SiGmail size={18} />, link: "mailto:naveen@requisor.io" },
+            
             {
               icon: <FaLinkedinIn size={18} />,
               link: "https://www.linkedin.com/company/requisor/",

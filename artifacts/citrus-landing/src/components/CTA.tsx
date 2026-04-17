@@ -20,9 +20,16 @@ export function CTA() {
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-10 tracking-tight leading-tight" style={{fontFamily:"'PixelGamer', monospace"}}>
             Want a game like this for your brand?
           </h2>
-          <button className="px-10 py-5 bg-white text-black font-bold text-lg rounded-xl hover:bg-gray-200 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] transform hover:-translate-y-1">
+          <a
+            href="mailto:naveen@requisor.io?subject=Game Inquiry&body=Hi, I’m interested in your booth games."
+            className="inline-block px-10 py-5 bg-white text-black font-bold text-lg rounded-xl 
+            hover:bg-gray-200 transition-all 
+            shadow-[0_0_40px_rgba(255,255,255,0.3)] 
+            hover:shadow-[0_0_60px_rgba(255,255,255,0.5)] 
+            transform hover:-translate-y-1"
+          >
             Get in Touch
-          </button>
+          </a>
         </motion.div>
       </div>
     </section>
