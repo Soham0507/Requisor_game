@@ -35,7 +35,7 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {["Home", "Games", "Contact"].map((item) => (
+          {["Home", "Games" , "Team","Contact"].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -65,7 +65,7 @@ export function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl py-4 flex flex-col md:hidden"
           >
-            {["Home", "Games", "Contact"].map((item) => (
+            {["Home", "Games", "Team", "Contact "].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}

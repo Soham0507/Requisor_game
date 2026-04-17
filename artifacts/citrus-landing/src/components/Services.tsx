@@ -54,7 +54,7 @@ export function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-bold text-white mb-4"
+            className="text-4xl md:text-6xl font-bold text-white mb-4" style={{fontFamily:"'PixelGamer', monospace"}}
           >
             Our Services
           </motion.h2>

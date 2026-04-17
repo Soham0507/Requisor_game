@@ -1,0 +1,252 @@
+import React from "react";
+import { motion } from "framer-motion";
+
+const projects = [
+  {
+    company: "AppViewX",
+    logo: "/logo/app1.jpeg",
+    game: "Basketball Game",
+    preview: "/logo/app1.mp4",
+    demo: "https://your-demo-link.com/basketball",
+
+    // 🎨 Brand Colors
+    colors: ["#FD3629", "#DA2A51", "#6708DA"],
+
+    challenge:
+      "At cybersecurity exhibitions, AppViewX needed a way to quickly capture attention and keep visitors engaged at their booth.",
+
+    solution:
+      "We developed a fast-paced basketball game optimized for booth interaction — easy to start, highly engaging, and designed for repeat plays.",
+
+    outcome:
+      "Significantly improved footfall retention and created a fun, interactive entry point for product conversations.",
+  },
+
+  {
+    company: "Avistar",
+    logo: "/logo/avistar.png",
+    game: "Basketball Game (Custom UI)",
+    preview: "/logo/avistar1.png",
+    demo: "https://basket-ball-for-avistar.replit.app/",
+
+    // 🎨 Brand Colors
+    colors: ["#29CAE0", "#1C90DD", "#1C41DD"],
+
+    challenge:
+      "Avistar required a game experience that not only engaged users but also visually aligned with their brand identity.",
+
+    solution:
+      "We customized our proven basketball game engine with Avistar’s branding — including UI, colors, and visual elements — ensuring a seamless brand experience.",
+
+    outcome:
+      "Delivered a branded, high-engagement experience that strengthened visual identity while maintaining gameplay performance.",
+  },
+
+  {
+    company: "Peak Technology",
+    logo: "/logo/peak.png",
+    game: "Cyber Runner Game",
+    preview: "/logo/cyber.mp4",
+    demo: "https://cybersecurity.requisor.io/",
+
+    // 🎨 Brand Colors
+    colors: ["#FCD07E", "#FEC553", "#FFBF3F"],
+
+    challenge:
+      "Peak Technology wanted a more immersive and theme-driven experience aligned with cybersecurity concepts.",
+
+    solution:
+      "We built a cyber-themed endless runner game inspired by digital threats and security environments, creating a strong thematic connection.",
+
+    outcome:
+      "Enhanced user immersion and delivered a memorable experience aligned with cybersecurity storytelling.",
+  },
+
+  {
+    company: "Peak Technology",
+    logo: "/logo/peak.png",
+    game: "Soccer Game",
+    preview: "/logo/soccer1.mp4",
+    demo: "https://your-demo-link.com/avistar",
+
+    // 🎨 Brand Colors
+    colors: ["#FCD07E", "#FEC553", "#FFBF3F"],
+
+    challenge:
+      "Needed an additional game format to engage a broader audience while maintaining development efficiency.",
+
+    solution:
+      "We reused the core gameplay logic from the basketball game and adapted it into a soccer-based experience with optimized mechanics.",
+
+    outcome:
+      "Enabled multiple engaging game formats with faster delivery and consistent user experience.",
+  },
+];
+function SectionTitle({ title, subtitle }: any) {
+  return (
+    <div className="text-center mb-16">
+      <h2
+        className="text-4xl md:text-6xl font-bold text-white mb-4"
+        style={{ fontFamily: "'PixelGamer', monospace" }}
+      >
+        {title}
+      </h2>
+      <p className="text-green-400/70 font-mono">{subtitle}</p>
+    </div>
+  );
+}
+
+function CaseCard({ item, index }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.15 }}
+      className="group bg-black/60  rounded-2xl overflow-hidden 
+      backdrop-blur-md hover:border-green-400/40 
+      hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all duration-300" style={{
+        border: `2px solid ${item.colors[0]}40`,
+        boxShadow: `0 0 30px ${item.colors[1]}30`
+      }}
+    >
+      {/* 🎥 GAME PREVIEW */}
+      <div className="relative h-52 overflow-hidden">
+        <video
+          src={item.preview}
+          autoPlay
+          loop
+          muted
+          className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition" />
+
+        {/* 🎮 Play Button */}
+        <a
+          href={item.demo}
+          target="_blank"
+          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+        >
+          <div
+            className="px-6 py-3 bg-green-500 text-black font-bold rounded-lg 
+          shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:scale-110 transition"
+          >
+            ▶ Play Demo
+          </div>
+        </a>
+      </div>
+
+      {/* CONTENT */}
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-4">
+          <img src={item.logo} className="w-10 h-10 bg-white rounded-md p-1" />
+          <div>
+            <h3
+              className="font-bold"
+              style={{
+                color: item.colors[0],
+                textShadow: `0 0 10px ${item.colors[0]}66`
+              }}
+            >
+              {item.company}
+            </h3>
+            <p 
+              className="text-sm"
+              style={{ color: item.colors[1] }}
+            >
+              {item.game}
+            </p>
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="space-y-3 text-sm">
+          <p className="text-white/70">
+            <span 
+              style={{ color: item.colors[2] }}
+              className="uppercase text-xs"
+            >
+              Challenge:
+            </span> {item.challenge}
+          </p>
+          <p className="text-white/70">
+            <span className="text-white/40">Solution:</span> {item.solution}
+          </p>
+          <p className="text-green-400/80">
+            <p 
+              style={{ color: item.colors[1] }}
+            >
+              <span style={{ color: item.colors[2] }}>Outcome:</span> {item.outcome}
+            </p> 
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function CyberCaseStudy() {
+  return (
+    <section className="bg-black text-white relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-[#020617] to-black" />
+      <div
+        className="absolute inset-0 opacity-20 
+        bg-[linear-gradient(rgba(0,255,0,0.08)_1px,transparent_1px),
+        linear-gradient(90deg,rgba(0,255,0,0.08)_1px,transparent_1px)]
+        bg-[size:50px_50px]"
+      />
+
+      <div className="container mx-auto px-6 md:px-12 py-24 relative z-10">
+        {/* HERO */}
+        <SectionTitle
+          title="Cyber Security Gaming Solutions"
+          subtitle="// Built for Booth Engagement & Brand Interaction"
+        />
+
+        {/* INTRO */}
+        <div className="max-w-3xl mx-auto text-center mb-20 text-white/70 leading-relaxed">
+          We design and develop interactive web-based games specifically for
+          cybersecurity companies, helping them attract, engage, and retain
+          audiences at exhibitions and events.
+        </div>
+
+        {/* LOGO STRIP */}
+        <div className="flex flex-wrap justify-center gap-8 mb-20 opacity-80">
+          <img src="/logo/app1.jpeg" className="h-12   rounded-sm" />
+          <img src="/logo/avistar.png" className="h-12 bg-white rounded-sm" />
+          <img src="/logo/peak.png" className="h-12 bg-white p-1 rounded-sm" />
+        </div>
+
+        {/* CASE STUDIES */}
+        <SectionTitle title="Our Work" subtitle="// Real Projects Delivered" />
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-24">
+          {projects.map((item, i) => (
+            <CaseCard key={i} item={item} index={i} />
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <h3 className="text-3xl font-bold mb-4">
+            Want a Cyber Game for Your Brand?
+          </h3>
+          <p className="text-white/60 mb-6">
+            Let’s build an interactive experience that attracts and engages your
+            audience.
+          </p>
+          <a
+            href="#contact"
+            className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl 
+            hover:bg-green-400 transition shadow-[0_0_30px_rgba(34,197,94,0.5)]"
+          >
+            Get Your Custom Game
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}

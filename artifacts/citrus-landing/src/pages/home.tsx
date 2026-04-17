@@ -8,7 +8,8 @@ import { Services } from "@/components/Services";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { CursorGrid } from "@/components/cursor";
-
+import { Team } from "@/components/Team";
+import { CyberCaseStudy } from "@/components/Cyber"; 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
@@ -18,8 +19,10 @@ export default function Home() {
         <Hero />
         {/* <ScrollTicker /> */}
         <Stats />
-        <Games />
+        {/* <Games /> */}
         <Services />
+        <CyberCaseStudy />
+        <Team />
         <CTA />
       </main>
       <Footer />

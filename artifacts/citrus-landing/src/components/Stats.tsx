@@ -95,7 +95,7 @@ export function Stats() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             Leaderboard
           </div>
-          <h2 className="text-3xl md:text-5xl mt-10 font-bold text-white">
+          <h2 className="text-4xl md:text-6xl mt-10 font-bold text-white" style={{fontFamily:"'PixelGamer', monospace"}}>
             By the Numbers
           </h2>
         </motion.div>
