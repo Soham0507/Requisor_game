@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ParticleText } from "@/components/ParticleText";
+import { Background } from "@/components/Baskground";
 
 function FloatingController() {
   return (
@@ -223,6 +224,9 @@ export function Hero() {
         className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.05)_1px,transparent_1px)] bg-[size:60px_60px]"
         style={{ y: gridY }}
       />
+
+      {/* Animated shader background — sits above the grid pattern */}
+      <Background />
 
       
       <div className="absolute top-[20%] left-[15%] w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
