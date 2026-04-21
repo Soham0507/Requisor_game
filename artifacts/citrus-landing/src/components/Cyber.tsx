@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const projects = [
   {
     company: "AppViewX",
-    logo: "/logo/app1.jpeg",
+    logo: "/logo/app1.png",
     game: "Basketball Game",
     preview: "/logo/app1.mp4",
     demo: "https://your-demo-link.com/basketball",
@@ -141,7 +141,7 @@ function CaseCard({ item, index }: any) {
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-4">
-          <img src={item.logo} className="w-10 h-10 bg-white rounded-md p-1" />
+          <img src={item.logo} className="w-10 h-10 bg-white rounded-md" />
           <div>
             <h3
               className="font-bold"
@@ -214,10 +214,26 @@ export function CyberCaseStudy() {
         </div>
 
         {/* LOGO STRIP */}
+        {/* LOGO STRIP */}
         <div className="flex flex-wrap justify-center gap-8 mb-20 opacity-80">
-          <img src="/logo/app1.jpeg" className="h-12   rounded-sm" />
-          <img src="/logo/avistar.png" className="h-12 bg-white rounded-sm" />
-          <img src="/logo/peak.png" className="h-12 bg-white p-1 rounded-sm" />
+          <div className="relative group">
+            <img src="/logo/app1.png" className="h-12 rounded-sm" />
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              AppViewX
+            </span>
+          </div>
+          <div className="relative group">
+            <img src="/logo/avistar.png" className="h-12 bg-white rounded-md" />
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Avistar
+            </span>
+          </div>
+          <div className="relative group">
+            <img src="/logo/peak.png" className="h-12 rounded-md" />
+            <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Peak
+            </span>
+          </div>
         </div>
 
         {/* CASE STUDIES */}
