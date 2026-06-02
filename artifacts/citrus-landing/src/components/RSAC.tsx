@@ -2,9 +2,6 @@ import { motion } from "framer-motion";
 import { useScroll, useTransform } from "framer-motion";
 
 export function RSAC() {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  void y;
   const revealVariant = {
     hidden: {
       opacity: 0,
@@ -21,7 +18,9 @@ export function RSAC() {
       },
     },
   }; 
-  
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
   return (
     <section className="min-h-screen bg-black text-white py-20 px-6 md:px-12 relative overflow-hidden">
 
@@ -29,7 +28,7 @@ export function RSAC() {
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-orange-500/20 blur-[120px]" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 blur-[140px]" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10" style={{ y }}>
 
         {/* Heading */}
         <motion.div
@@ -37,13 +36,13 @@ export function RSAC() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
-          style={{ y }}>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
-            RSAC 2026 Booth Showcase
+          >
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4" style={{ fontFamily: "'PixelGamer', monospace" }}>
+            RSAC Booth Showcase
           </h1>
 
           <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            Our interactive <span className="text-orange-400 font-semibold">Basketball Game</span> was deployed live at the AppViewX booth during RSAC 2026 — driving engagement, attracting visitors, and creating a fun cyber-themed experience.
+            Our interactive <span className="text-orange-400 font-semibold">Basketball Game</span> was deployed live at the AppViewX booth during RSAC 2026 driving engagement and attracting visitors.
           </p>
         </motion.div>
 

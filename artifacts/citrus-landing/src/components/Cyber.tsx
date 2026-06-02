@@ -81,6 +81,46 @@ const projects = [
     outcome:
       "Enabled multiple engaging game formats with faster delivery and consistent user experience.",
   },
+
+  {
+    company: "Requisor.AI",
+    logo: "/logo/dino.png",
+    game: "90's Space War",
+    preview: "/logo/90.mp4",
+    demo: "https://90sspacewar.requisor.io/",
+
+    // 🎨 Brand Colors
+    colors: ["#17CFA1", "#5EB09E", "#74B19F"],
+
+    challenge:
+      "Needed an Nostalgiatic game what gives classical 90's vibe",
+
+    solution:
+      "We reused the core gameplay logic from the space war game additionally enabeling hand gesture control access.",
+
+    outcome:
+      "Enabled Hand gesture controlled game formats with faster delivery and consistent user experience.",
+  },
+
+  {
+    company: "Requisor.AI",
+    logo: "/logo/dino.png",
+    game: "Space Shooter",
+    preview: "/logo/spaceshooter.mp4",
+    demo: "https://90sspacewar.requisor.io/",
+
+    // 🎨 Brand Colors
+    colors: ["#17CFA1", "#5EB09E", "#74B19F"],
+
+    challenge:
+      "Build a polished, browser-based 2D space shooter game inside a React + Vite frontend dashboard",
+
+    solution:
+      " Implemented a complete HTML5 canvas game loop with mouse aiming, click-to-shoot, asteroid spawning and collision detection",
+
+    outcome:
+      "The game runs smoothly without any crash overlays in both development and production.",
+  },
 ];
 function SectionTitle({ title, subtitle }: any) {
   return (
