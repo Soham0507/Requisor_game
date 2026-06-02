@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useScroll, useTransform } from "framer-motion";
 
 export function RSAC() {
-  const revealVariant = {
+  const revealVariant: Variants = {
     hidden: {
       opacity: 0,
       y: 60,
@@ -28,7 +28,7 @@ export function RSAC() {
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-orange-500/20 blur-[120px]" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 blur-[140px]" />
 
-      <div className="max-w-6xl mx-auto relative z-10" style={{ y }}>
+      <motion.div className="max-w-6xl mx-auto relative z-10" style={{ y }}>
 
         {/* Heading */}
         <motion.div
@@ -171,7 +171,7 @@ export function RSAC() {
           </div>
         </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 }

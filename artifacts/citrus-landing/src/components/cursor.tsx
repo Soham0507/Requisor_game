@@ -44,8 +44,8 @@ export function CursorGrid() {
     }
 
     function onResize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = canvas!.width = window.innerWidth;
+      height = canvas!.height = window.innerHeight;
       initGrid();
     }
 

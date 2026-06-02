@@ -7,7 +7,7 @@ const projects = [
     logo: "/logo/app1.png",
     game: "Basketball Game",
     preview: "/logo/app1.mp4",
-    demo: "https://your-demo-link.com/basketball",
+    demo: "https://appviewx6.requisor.io",
 
     // 🎨 Brand Colors
     colors: ["#FD3629", "#DA2A51", "#6708DA"],
@@ -20,26 +20,6 @@ const projects = [
 
     outcome:
       "Significantly improved footfall retention and created a fun, interactive entry point for product conversations.",
-  },
-
-  {
-    company: "Avistar",
-    logo: "/logo/avistar.png",
-    game: "Basketball Game (Custom UI)",
-    preview: "/logo/avistar1.png",
-    demo: "https://basket-ball-for-avistar.replit.app/",
-
-    // 🎨 Brand Colors
-    colors: ["#29CAE0", "#1C90DD", "#1C41DD"],
-
-    challenge:
-      "Avistar required a game experience that not only engaged users but also visually aligned with their brand identity.",
-
-    solution:
-      "We customized our proven basketball game engine with Avistar’s branding — including UI, colors, and visual elements — ensuring a seamless brand experience.",
-
-    outcome:
-      "Delivered a branded, high-engagement experience that strengthened visual identity while maintaining gameplay performance.",
   },
 
   {
@@ -81,7 +61,39 @@ const projects = [
     outcome:
       "Enabled multiple engaging game formats with faster delivery and consistent user experience.",
   },
+  {
+    company: "Peak Technology",
+    logo: "/logo/peak.png",
+    game: "Lazer Shooter",
+    colors: ["#FCD07E", "#FEC553", "#FFBF3F"],
+    preview: "/logo/lazer.mp4",
+    demo: "https://ai.studio/apps/7168d6f7-e6cb-45a2-bd22-e6d113ceb891?fullscreenApplet=true",
+    challenge:
+      "Needed an additional game format to engage a broader audience while maintaining development efficiency.",
+    solution:
+      "Developed a fast, interactive web-based game designed for instant engagement in physical environments Leveraged intelligent gameplay systems.",
+    outcome:
+      "Enabled multiple engaging game formats with faster delivery and consistent user experience.",
+  },
+  {
+    company: "Avistar",
+    logo: "/logo/avistar.png",
+    game: "Basketball Game (Custom UI)",
+    preview: "/logo/avistart1.png",
+    demo: "https://basket-ball-for-avistar.replit.app/",
+    type: "image",
+    // 🎨 Brand Colors
+    colors: ["#29CAE0", "#1C90DD", "#1C41DD"],
 
+    challenge:
+      "Avistar required a game experience that not only engaged users but also visually aligned with their brand identity.",
+
+    solution:
+      "We customized our proven basketball game engine with Avistar’s branding — including UI, colors, and visual elements — ensuring a seamless brand experience.",
+
+    outcome:
+      "Delivered a branded, high-engagement experience that strengthened visual identity while maintaining gameplay performance.",
+  },
   {
     company: "Requisor.AI",
     logo: "/logo/dino.png",
@@ -150,17 +162,23 @@ function CaseCard({ item, index }: any) {
       }}
     >
       {/* 🎥 GAME PREVIEW */}
-      <div className="relative h-52 overflow-hidden">
-        <video
-          src={item.preview}
-          autoPlay
-          loop
-          muted
-          className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-        />
+        <div className="relative h-52 overflow-hidden">
+          {item.type === "image" ? (
+            <img
+              src={item.preview}
+              className="w-full h-full object-fit group-hover:scale-110 transition duration-500"
+            />
+          ) : (
+            <video
+              src={item.preview}
+              autoPlay
+              loop
+              muted
+              className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+            />
+          )}
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition" />
+
 
         {/* 🎮 Play Button */}
         <a

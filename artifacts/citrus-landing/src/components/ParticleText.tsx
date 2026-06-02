@@ -64,8 +64,8 @@ export function ParticleText() {
       const lineH = fontSize * 1.3;
       const H = Math.ceil(lineH * 2 + fontSize * 0.3);
 
-      canvas.width = W;
-      canvas.height = H;
+      canvas!.width = W;
+      canvas!.height = H;
 
       offCtx.canvas.width = W;
       offCtx.canvas.height = H;
