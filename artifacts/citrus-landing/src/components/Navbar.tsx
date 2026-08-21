@@ -35,15 +35,25 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {["Home", "Games" , "Team","Contact"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm font-medium text-muted-foreground hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
-            >
-              {item}
-            </a>
-          ))}
+          {["Home", "Games", "Team", "Contact"].map((item) =>
+            item === "Games" ? (
+              <Link
+                key={item}
+                href="/games"
+                className="text-sm font-medium text-muted-foreground hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+              >
+                {item}
+              </Link>
+            ) : (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm font-medium text-muted-foreground hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+              >
+                {item}
+              </a>
+            ),
+          )}
         </nav>
 
         {/* Mobile Nav Toggle */}
@@ -65,16 +75,27 @@ export function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl py-4 flex flex-col md:hidden"
           >
-            {["Home", "Games", "Team", "Contact "].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-6 py-4 text-base font-medium text-white border-b border-white/5 hover:bg-white/5 transition-colors"
-              >
-                {item}
-              </a>
-            ))}
+            {["Home", "Games", "Team", "Contact "].map((item) =>
+              item === "Games" ? (
+                <Link
+                  key={item}
+                  href="/games"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-6 py-4 text-base font-medium text-white border-b border-white/5 hover:bg-white/5 transition-colors"
+                >
+                  {item}
+                </Link>
+              ) : (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-6 py-4 text-base font-medium text-white border-b border-white/5 hover:bg-white/5 transition-colors"
+                >
+                  {item}
+                </a>
+              ),
+            )}
           </motion.div>
         )}
       </AnimatePresence>

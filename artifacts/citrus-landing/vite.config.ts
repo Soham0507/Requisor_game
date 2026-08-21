@@ -26,6 +26,14 @@ if (!basePath) {
   );
 }
 
+// Local dev only: proxy API + brandable game preview requests through to the
+// api-server so the browser only ever talks to this dev server's origin.
+const apiServerUrl = process.env.API_SERVER_URL ?? "http://localhost:5300";
+const devProxy = {
+  "/api": { target: apiServerUrl, changeOrigin: true },
+  "/game-previews": { target: apiServerUrl, changeOrigin: true },
+};
+
 export default defineConfig({
   base: basePath,
   plugins: [
@@ -66,10 +74,12 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
+    proxy: devProxy,
   },
   preview: {
     port,
     host: "0.0.0.0",
     allowedHosts: true,
+    proxy: devProxy,
   },
 });

@@ -14,3 +14,132 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary List the brandable game catalog
+ */
+export const ListGamesResponseItem = zod.object({
+  id: zod.string(),
+  slug: zod.string(),
+  name: zod.string(),
+  tagline: zod.string(),
+  thumbnailUrl: zod.string().nullish(),
+  previewBasePath: zod.string().nullish(),
+  brandSupport: zod.enum(["full", "chrome_only"]),
+  defaultPrimaryColor: zod.string(),
+  defaultSecondaryColor: zod.string(),
+  defaultAccentColor: zod.string(),
+  defaultLogoUrl: zod.string().nullish(),
+  defaultHeading: zod.string(),
+  priceCents: zod.number(),
+});
+export const ListGamesResponse = zod.array(ListGamesResponseItem);
+
+/**
+ * @summary Get a single game by slug
+ */
+export const GetGameParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetGameResponse = zod.object({
+  id: zod.string(),
+  slug: zod.string(),
+  name: zod.string(),
+  tagline: zod.string(),
+  thumbnailUrl: zod.string().nullish(),
+  previewBasePath: zod.string().nullish(),
+  brandSupport: zod.enum(["full", "chrome_only"]),
+  defaultPrimaryColor: zod.string(),
+  defaultSecondaryColor: zod.string(),
+  defaultAccentColor: zod.string(),
+  defaultLogoUrl: zod.string().nullish(),
+  defaultHeading: zod.string(),
+  priceCents: zod.number(),
+});
+
+/**
+ * Upserts by the combination of gameId + draftToken
+ * @summary Create or update a branding draft for a game
+ */
+export const UpsertBrandingDraftBody = zod.object({
+  gameId: zod.string(),
+  draftToken: zod.string(),
+  primaryColor: zod.string(),
+  secondaryColor: zod.string(),
+  accentColor: zod.string(),
+  logoDataUrl: zod.string().nullish(),
+  heading: zod.string(),
+  tagline: zod.string().nullish(),
+});
+
+export const UpsertBrandingDraftResponse = zod.object({
+  id: zod.string(),
+  gameId: zod.string(),
+  draftToken: zod.string(),
+  primaryColor: zod.string(),
+  secondaryColor: zod.string(),
+  accentColor: zod.string(),
+  logoDataUrl: zod.string().nullish(),
+  heading: zod.string(),
+  tagline: zod.string().nullish(),
+  status: zod.enum(["draft", "finalized"]),
+});
+
+/**
+ * @summary Get a branding draft by id
+ */
+export const GetBrandingDraftParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const GetBrandingDraftResponse = zod.object({
+  id: zod.string(),
+  gameId: zod.string(),
+  draftToken: zod.string(),
+  primaryColor: zod.string(),
+  secondaryColor: zod.string(),
+  accentColor: zod.string(),
+  logoDataUrl: zod.string().nullish(),
+  heading: zod.string(),
+  tagline: zod.string().nullish(),
+  status: zod.enum(["draft", "finalized"]),
+});
+
+/**
+ * @summary Finalize a branding draft and create a pending order
+ */
+export const FinalizeBrandingDraftParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const FinalizeBrandingDraftBody = zod.object({
+  contactEmail: zod.string().nullish(),
+});
+
+export const FinalizeBrandingDraftResponse = zod.object({
+  id: zod.string(),
+  brandingDraftId: zod.string(),
+  gameId: zod.string(),
+  status: zod.enum(["pending_payment"]),
+  totalAmountCents: zod.number(),
+  contactEmail: zod.string().nullish(),
+});
+
+/**
+ * @summary Submit a request for a fully custom UI build
+ */
+export const CreateCustomUiRequestBody = zod.object({
+  gameId: zod.string().nullish(),
+  name: zod.string(),
+  email: zod.string(),
+  message: zod.string(),
+});
+
+export const CreateCustomUiRequestResponse = zod.object({
+  id: zod.string(),
+  gameId: zod.string().nullish(),
+  name: zod.string(),
+  email: zod.string(),
+  message: zod.string(),
+});

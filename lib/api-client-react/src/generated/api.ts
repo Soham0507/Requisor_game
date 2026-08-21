@@ -5,18 +5,30 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  BrandingDraft,
+  CreateCustomUiRequestRequest,
+  CustomUiRequest,
+  FinalizeBrandingDraftRequest,
+  Game,
+  HealthStatus,
+  Order,
+  UpsertBrandingDraftRequest,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -99,3 +111,495 @@ export function useHealthCheck<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary List the brandable game catalog
+ */
+export const getListGamesUrl = () => {
+  return `/api/games`;
+};
+
+export const listGames = async (options?: RequestInit): Promise<Game[]> => {
+  return customFetch<Game[]>(getListGamesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListGamesQueryKey = () => {
+  return [`/api/games`] as const;
+};
+
+export const getListGamesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listGames>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof listGames>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListGamesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listGames>>> = ({
+    signal,
+  }) => listGames({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listGames>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListGamesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listGames>>
+>;
+export type ListGamesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List the brandable game catalog
+ */
+
+export function useListGames<
+  TData = Awaited<ReturnType<typeof listGames>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof listGames>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListGamesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get a single game by slug
+ */
+export const getGetGameUrl = (slug: string) => {
+  return `/api/games/${slug}`;
+};
+
+export const getGame = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<Game> => {
+  return customFetch<Game>(getGetGameUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetGameQueryKey = (slug: string) => {
+  return [`/api/games/${slug}`] as const;
+};
+
+export const getGetGameQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGame>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getGame>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetGameQueryKey(slug);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGame>>> = ({
+    signal,
+  }) => getGame(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<Awaited<ReturnType<typeof getGame>>, TError, TData> & {
+    queryKey: QueryKey;
+  };
+};
+
+export type GetGameQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGame>>
+>;
+export type GetGameQueryError = ErrorType<void>;
+
+/**
+ * @summary Get a single game by slug
+ */
+
+export function useGetGame<
+  TData = Awaited<ReturnType<typeof getGame>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getGame>>, TError, TData>;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetGameQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Upserts by the combination of gameId + draftToken
+ * @summary Create or update a branding draft for a game
+ */
+export const getUpsertBrandingDraftUrl = () => {
+  return `/api/branding-drafts`;
+};
+
+export const upsertBrandingDraft = async (
+  upsertBrandingDraftRequest: UpsertBrandingDraftRequest,
+  options?: RequestInit,
+): Promise<BrandingDraft> => {
+  return customFetch<BrandingDraft>(getUpsertBrandingDraftUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(upsertBrandingDraftRequest),
+  });
+};
+
+export const getUpsertBrandingDraftMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof upsertBrandingDraft>>,
+    TError,
+    { data: BodyType<UpsertBrandingDraftRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof upsertBrandingDraft>>,
+  TError,
+  { data: BodyType<UpsertBrandingDraftRequest> },
+  TContext
+> => {
+  const mutationKey = ["upsertBrandingDraft"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof upsertBrandingDraft>>,
+    { data: BodyType<UpsertBrandingDraftRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return upsertBrandingDraft(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpsertBrandingDraftMutationResult = NonNullable<
+  Awaited<ReturnType<typeof upsertBrandingDraft>>
+>;
+export type UpsertBrandingDraftMutationBody =
+  BodyType<UpsertBrandingDraftRequest>;
+export type UpsertBrandingDraftMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create or update a branding draft for a game
+ */
+export const useUpsertBrandingDraft = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof upsertBrandingDraft>>,
+    TError,
+    { data: BodyType<UpsertBrandingDraftRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof upsertBrandingDraft>>,
+  TError,
+  { data: BodyType<UpsertBrandingDraftRequest> },
+  TContext
+> => {
+  return useMutation(getUpsertBrandingDraftMutationOptions(options));
+};
+
+/**
+ * @summary Get a branding draft by id
+ */
+export const getGetBrandingDraftUrl = (id: string) => {
+  return `/api/branding-drafts/${id}`;
+};
+
+export const getBrandingDraft = async (
+  id: string,
+  options?: RequestInit,
+): Promise<BrandingDraft> => {
+  return customFetch<BrandingDraft>(getGetBrandingDraftUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetBrandingDraftQueryKey = (id: string) => {
+  return [`/api/branding-drafts/${id}`] as const;
+};
+
+export const getGetBrandingDraftQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBrandingDraft>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBrandingDraft>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetBrandingDraftQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getBrandingDraft>>
+  > = ({ signal }) => getBrandingDraft(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBrandingDraft>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetBrandingDraftQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBrandingDraft>>
+>;
+export type GetBrandingDraftQueryError = ErrorType<void>;
+
+/**
+ * @summary Get a branding draft by id
+ */
+
+export function useGetBrandingDraft<
+  TData = Awaited<ReturnType<typeof getBrandingDraft>>,
+  TError = ErrorType<void>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getBrandingDraft>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBrandingDraftQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Finalize a branding draft and create a pending order
+ */
+export const getFinalizeBrandingDraftUrl = (id: string) => {
+  return `/api/branding-drafts/${id}/finalize`;
+};
+
+export const finalizeBrandingDraft = async (
+  id: string,
+  finalizeBrandingDraftRequest?: FinalizeBrandingDraftRequest,
+  options?: RequestInit,
+): Promise<Order> => {
+  return customFetch<Order>(getFinalizeBrandingDraftUrl(id), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(finalizeBrandingDraftRequest),
+  });
+};
+
+export const getFinalizeBrandingDraftMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof finalizeBrandingDraft>>,
+    TError,
+    { id: string; data: BodyType<FinalizeBrandingDraftRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof finalizeBrandingDraft>>,
+  TError,
+  { id: string; data: BodyType<FinalizeBrandingDraftRequest> },
+  TContext
+> => {
+  const mutationKey = ["finalizeBrandingDraft"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof finalizeBrandingDraft>>,
+    { id: string; data: BodyType<FinalizeBrandingDraftRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return finalizeBrandingDraft(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type FinalizeBrandingDraftMutationResult = NonNullable<
+  Awaited<ReturnType<typeof finalizeBrandingDraft>>
+>;
+export type FinalizeBrandingDraftMutationBody =
+  BodyType<FinalizeBrandingDraftRequest>;
+export type FinalizeBrandingDraftMutationError = ErrorType<void>;
+
+/**
+ * @summary Finalize a branding draft and create a pending order
+ */
+export const useFinalizeBrandingDraft = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof finalizeBrandingDraft>>,
+    TError,
+    { id: string; data: BodyType<FinalizeBrandingDraftRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof finalizeBrandingDraft>>,
+  TError,
+  { id: string; data: BodyType<FinalizeBrandingDraftRequest> },
+  TContext
+> => {
+  return useMutation(getFinalizeBrandingDraftMutationOptions(options));
+};
+
+/**
+ * @summary Submit a request for a fully custom UI build
+ */
+export const getCreateCustomUiRequestUrl = () => {
+  return `/api/custom-ui-requests`;
+};
+
+export const createCustomUiRequest = async (
+  createCustomUiRequestRequest: CreateCustomUiRequestRequest,
+  options?: RequestInit,
+): Promise<CustomUiRequest> => {
+  return customFetch<CustomUiRequest>(getCreateCustomUiRequestUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createCustomUiRequestRequest),
+  });
+};
+
+export const getCreateCustomUiRequestMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCustomUiRequest>>,
+    TError,
+    { data: BodyType<CreateCustomUiRequestRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createCustomUiRequest>>,
+  TError,
+  { data: BodyType<CreateCustomUiRequestRequest> },
+  TContext
+> => {
+  const mutationKey = ["createCustomUiRequest"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createCustomUiRequest>>,
+    { data: BodyType<CreateCustomUiRequestRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createCustomUiRequest(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateCustomUiRequestMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createCustomUiRequest>>
+>;
+export type CreateCustomUiRequestMutationBody =
+  BodyType<CreateCustomUiRequestRequest>;
+export type CreateCustomUiRequestMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Submit a request for a fully custom UI build
+ */
+export const useCreateCustomUiRequest = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCustomUiRequest>>,
+    TError,
+    { data: BodyType<CreateCustomUiRequestRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createCustomUiRequest>>,
+  TError,
+  { data: BodyType<CreateCustomUiRequestRequest> },
+  TContext
+> => {
+  return useMutation(getCreateCustomUiRequestMutationOptions(options));
+};

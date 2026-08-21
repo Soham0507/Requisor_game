@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zombie Hunter</title>
+  <meta name="description" content="A 3D zombie shooter game built with Three.js. Use WASD to move and O to shoot." />
+  <link rel="stylesheet" href="./zombie.css" />
+  <link rel="stylesheet" href="./zz_ui.css" />
+
+
+  <!-- ① Three.js CORE (r124) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>
+
+  <!-- ② Three.js addons (r126 – same minor, closest available) -->
+  <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/loaders/FontLoader.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/geometries/TextGeometry.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/effects/StereoEffect.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/utils/SkeletonUtils.js"></script>
+
+  <!-- ③ Post-processing -->
+  <script src="https://unpkg.com/three@0.126.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/postprocessing/MaskPass.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/shaders/FXAAShader.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://unpkg.com/three@0.126.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <!-- ④ GSAP (TweenMax) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.2/TweenMax.min.js"></script>
+</head>
+<body>
+
+  <!-- Wave HUD -->
+  <div id="hud">
+    <div class="hud-pill">WAVE&nbsp;<span id="wave-num">—</span></div>
+    <div class="hud-pill">SCORE&nbsp;<span id="score-num">0</span></div>
+    <div class="hud-pill">ALIVE&nbsp;<span id="alive-num">—</span></div>
+
+    <div class="hud-health">
+      <div class="hud-health-label">HEALTH</div>
+      <div class="hud-health-bar" aria-label="Player health">
+        <div id="player-health-fill" class="hud-health-fill"></div>
+      </div>
+      <div class="hud-health-text"><span id="player-health-text">100</span>/<span id="player-health-max-text">100</span></div>
+    </div>
+  </div>
+
+  <!-- Wave Announcement -->
+  <div id="wave-announce"></div>
+
+  <!-- Praise Effect -->
+  <div id="score-msg"></div>
+
+  <!-- Controls -->
+  <div id="uiControls">
+    <button id="pauseBtn" class="ui-btn">Pause</button>
+    <button id="restartBtn" class="ui-btn">Restart</button>
+  </div>
+
+
+  <!-- Info Button -->
+  <div id="infoButton">i</div>
+
+  <!-- Modal -->
+  <div id="controlsModal">
+    <div class="modalContent">
+      <span id="closeModal">&times;</span>
+      <h2>🎮 Gamepad Controls</h2>
+      <p><strong>Move:</strong> Gamepad Left Joystick</p>
+      <p><strong>Aim:</strong> A</p>
+      <p><strong>Shoot:</strong> X</p>
+      <hr>
+      <h2>⌨️ Keyboard</h2>
+      <p><strong>Move:</strong> W A S D</p>
+      <p><strong>Aim:</strong> P</p>
+      <p><strong>Shoot:</strong> O</p>
+    </div>
+  </div>
+
+  <div id="info"></div>
+
+  <!-- AIM/SHOOT Buttons -->
+  <button id="shootBtn" class="touch-btn shoot">Shoot</button>
+  <button id="aimBtn" class="touch-btn aim">Aim</button>
+
+  <!-- Branding bridge: re-skins the HUD in place (colors + page title) from
+       a branding chosen in the game hub. No UI replacement. -->
+  <script src="./brand-bridge.js"></script>
+
+  <!-- ⑤ Game logic – MUST be last, after all libraries -->
+  <script src="./zombie.js"></script>
+
+</body>
+</html>

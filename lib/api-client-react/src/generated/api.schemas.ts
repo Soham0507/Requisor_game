@@ -8,3 +8,92 @@
 export interface HealthStatus {
   status: string;
 }
+
+export type BrandSupport = (typeof BrandSupport)[keyof typeof BrandSupport];
+
+export const BrandSupport = {
+  full: "full",
+  chrome_only: "chrome_only",
+} as const;
+
+export interface Game {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  thumbnailUrl?: string | null;
+  previewBasePath?: string | null;
+  brandSupport: BrandSupport;
+  defaultPrimaryColor: string;
+  defaultSecondaryColor: string;
+  defaultAccentColor: string;
+  defaultLogoUrl?: string | null;
+  defaultHeading: string;
+  priceCents: number;
+}
+
+export interface UpsertBrandingDraftRequest {
+  gameId: string;
+  draftToken: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  logoDataUrl?: string | null;
+  heading: string;
+  tagline?: string | null;
+}
+
+export type BrandingDraftStatus =
+  (typeof BrandingDraftStatus)[keyof typeof BrandingDraftStatus];
+
+export const BrandingDraftStatus = {
+  draft: "draft",
+  finalized: "finalized",
+} as const;
+
+export interface BrandingDraft {
+  id: string;
+  gameId: string;
+  draftToken: string;
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  logoDataUrl?: string | null;
+  heading: string;
+  tagline?: string | null;
+  status: BrandingDraftStatus;
+}
+
+export interface FinalizeBrandingDraftRequest {
+  contactEmail?: string | null;
+}
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
+
+export const OrderStatus = {
+  pending_payment: "pending_payment",
+} as const;
+
+export interface Order {
+  id: string;
+  brandingDraftId: string;
+  gameId: string;
+  status: OrderStatus;
+  totalAmountCents: number;
+  contactEmail?: string | null;
+}
+
+export interface CreateCustomUiRequestRequest {
+  gameId?: string | null;
+  name: string;
+  email: string;
+  message: string;
+}
+
+export interface CustomUiRequest {
+  id: string;
+  gameId?: string | null;
+  name: string;
+  email: string;
+  message: string;
+}
