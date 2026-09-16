@@ -25,10 +25,7 @@ export function Navbar() {
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group"> <img src="/logo/dino.png" alt="Citrus Innovations logo" className="w-10 h-10  rounded-md" />
-          <span
-            className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors"
-            style={{ fontFamily: "'PixelGamer', monospace" }}
-          >
+          <span className="text-xl md:text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
             RequisorAI
           </span>
         </Link>
@@ -40,15 +37,15 @@ export function Navbar() {
               <Link
                 key={item}
                 href="/games"
-                className="text-sm font-medium text-muted-foreground hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 {item}
               </Link>
             ) : (
               <a
                 key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium text-muted-foreground hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+                href={`/#${item.toLowerCase()}`}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
               >
                 {item}
               </a>
@@ -58,7 +55,7 @@ export function Navbar() {
 
         {/* Mobile Nav Toggle */}
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-foreground"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -75,22 +72,22 @@ export function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl py-4 flex flex-col md:hidden"
           >
-            {["Home", "Games", "Team", "Contact "].map((item) =>
+            {["Home", "Games", "Team", "Contact"].map((item) =>
               item === "Games" ? (
                 <Link
                   key={item}
                   href="/games"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-6 py-4 text-base font-medium text-white border-b border-white/5 hover:bg-white/5 transition-colors"
+                  className="px-6 py-4 text-base font-medium text-foreground border-b border-border hover:bg-muted transition-colors"
                 >
                   {item}
                 </Link>
               ) : (
                 <a
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={`/#${item.toLowerCase()}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-6 py-4 text-base font-medium text-white border-b border-white/5 hover:bg-white/5 transition-colors"
+                  className="px-6 py-4 text-base font-medium text-foreground border-b border-border hover:bg-muted transition-colors"
                 >
                   {item}
                 </a>

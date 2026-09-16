@@ -29,14 +29,14 @@ export function OrderSummaryPanel({ gameName, priceCents, order, isFinalizing, o
   };
 
   return (
-    <Card className="bg-card border-white/10">
+    <Card className="bg-card border-border">
       <CardHeader>
         <CardTitle>Order summary</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">{gameName} — custom branding</span>
-          <span className="font-semibold text-white">{formatPrice(priceCents)}</span>
+          <span className="font-semibold text-foreground">{formatPrice(priceCents)}</span>
         </div>
 
         {order ? (
@@ -47,7 +47,7 @@ export function OrderSummaryPanel({ gameName, priceCents, order, isFinalizing, o
             {/* Payment is bypassed for now — no Stripe/checkout step exists
                 yet, so finalizing a draft goes straight to a working live
                 link instead of a payment wall. */}
-            <p className="text-xs text-muted-foreground bg-white/5 border border-white/10 rounded-md px-3 py-2">
+            <p className="text-xs text-muted-foreground bg-muted border border-border rounded-md px-3 py-2">
               Payment is bypassed for now — here's your live link.
             </p>
             {liveLink && (

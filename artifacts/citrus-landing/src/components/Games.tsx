@@ -149,7 +149,7 @@ export function Games() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-4" style={{fontFamily:"'PixelGamer', monospace"}}
+            className="text-4xl md:text-6xl font-bold text-white mb-4"
           >
             Our Games
           </motion.h2>

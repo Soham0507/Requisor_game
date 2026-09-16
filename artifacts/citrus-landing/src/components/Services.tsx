@@ -46,7 +46,7 @@ const itemVariants: Variants = {
 
 export function Services() {
   return (
-    <section id="services" className="py-32 bg-[#050505] relative">
+    <section id="services" className="py-32 bg-background relative">
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="mb-16 md:mb-24 text-center">
           <motion.h2 
@@ -54,7 +54,7 @@ export function Services() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-4" style={{fontFamily:"'PixelGamer', monospace"}}
+            className="text-4xl md:text-6xl font-bold text-foreground mb-4"
           >
             Our Services
           </motion.h2>
@@ -76,12 +76,12 @@ export function Services() {
         >
           {services.map((service, index) => (
             <motion.div key={index} variants={itemVariants}>
-              <div className="group p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start">
-                <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500 shadow-inner">
+              <div className="group p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start">
+                <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary/10 border border-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500">
                   <service.icon size={32} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     {service.description}
                   </p>

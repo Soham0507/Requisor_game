@@ -17,6 +17,8 @@ function easeOutCubic(t: number, b: number, c: number, d: number): number {
 
 const LINE1 = "We Create High-Impact";
 const LINE2 = "Booth Gaming Experiences";
+const FONT_FAMILY = "'Plus Jakarta Sans', sans-serif";
+const FONT_WEIGHT = 800;
 
 const START_DELAY = 40;
 const DURATION = 420;
@@ -40,17 +42,15 @@ export function ParticleText() {
       const W = Math.min(wrap!.clientWidth || 1200, 1400);
 
       let fontSize = Math.max(Math.min(W / 9, 110), 38);
-      const FONT_FAMILY = "'PixelGamer', monospace";
-
       await document.fonts.ready;
       try {
-        await document.fonts.load(`${fontSize}px ${FONT_FAMILY}`);
+        await document.fonts.load(`${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`);
       } catch (_) {}
 
       const offCanvas = document.createElement("canvas");
       const offCtx = offCanvas.getContext("2d")!;
 
-      offCtx.font = `${fontSize}px ${FONT_FAMILY}`;
+      offCtx.font = `${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`;
 
       const maxTxtW = Math.max(
         offCtx.measureText(LINE1).width,
@@ -168,7 +168,7 @@ export function ParticleText() {
       ctx.putImageData(frame, 0, 0);
 
       // 🔥 AURORA OVERLAY TEXT
-      ctx.font = `${fontSize}px 'PixelGamer', monospace`;
+      ctx.font = `${FONT_WEIGHT} ${fontSize}px ${FONT_FAMILY}`;
 
       // Line 1
       ctx.fillStyle = "rgba(255,255,255,0.08)";

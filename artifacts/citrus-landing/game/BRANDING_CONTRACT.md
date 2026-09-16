@@ -69,7 +69,7 @@ colors update live), just not a full gameplay re-skin.
 
 ## Reference implementation
 
-`game/Space-Shooter-1/Space-Shooter-1/artifacts/game-dashboard/src/brand-bridge.ts`
+`artifacts/games/space-shooter-1/src/brand-bridge.ts`
 implements the full contract, including canvas color theming in
 `GameCanvas.tsx`. Use it as the template when upgrading another game from
 `chrome_only` to `full`.

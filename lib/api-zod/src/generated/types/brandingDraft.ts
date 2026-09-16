@@ -15,6 +15,8 @@ export interface BrandingDraft {
   secondaryColor: string;
   accentColor: string;
   logoDataUrl?: string | null;
+  bgDataUrl?: string | null;
+  fontDataUrl?: string | null;
   heading: string;
   tagline?: string | null;
   status: BrandingDraftStatus;

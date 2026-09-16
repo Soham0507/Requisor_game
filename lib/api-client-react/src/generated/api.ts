@@ -17,13 +17,19 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  ApiError,
+  BoothStats,
   BrandingDraft,
   CreateCustomUiRequestRequest,
   CustomUiRequest,
   FinalizeBrandingDraftRequest,
   Game,
+  Generation,
+  GenerationInput,
   HealthStatus,
+  ListGenerationsParams,
   Order,
+  Scene,
   UpsertBrandingDraftRequest,
 } from "./api.schemas";
 
@@ -603,3 +609,508 @@ export const useCreateCustomUiRequest = <
 > => {
   return useMutation(getCreateCustomUiRequestMutationOptions(options));
 };
+
+/**
+ * Returns the available boat experiences a visitor can choose from
+ * @summary List boat experiences
+ */
+export const getListScenesUrl = () => {
+  return `/api/scenes`;
+};
+
+export const listScenes = async (options?: RequestInit): Promise<Scene[]> => {
+  return customFetch<Scene[]>(getListScenesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListScenesQueryKey = () => {
+  return [`/api/scenes`] as const;
+};
+
+export const getListScenesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listScenes>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listScenes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListScenesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listScenes>>> = ({
+    signal,
+  }) => listScenes({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listScenes>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListScenesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listScenes>>
+>;
+export type ListScenesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List boat experiences
+ */
+
+export function useListScenes<
+  TData = Awaited<ReturnType<typeof listScenes>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listScenes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListScenesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns the most recent booth creations for the live gallery
+ * @summary Recent creations
+ */
+export const getListGenerationsUrl = (params?: ListGenerationsParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/generations?${stringifiedParams}`
+    : `/api/generations`;
+};
+
+export const listGenerations = async (
+  params?: ListGenerationsParams,
+  options?: RequestInit,
+): Promise<Generation[]> => {
+  return customFetch<Generation[]>(getListGenerationsUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListGenerationsQueryKey = (params?: ListGenerationsParams) => {
+  return [`/api/generations`, ...(params ? [params] : [])] as const;
+};
+
+export const getListGenerationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listGenerations>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListGenerationsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listGenerations>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListGenerationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listGenerations>>> = ({
+    signal,
+  }) => listGenerations(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listGenerations>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListGenerationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listGenerations>>
+>;
+export type ListGenerationsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Recent creations
+ */
+
+export function useListGenerations<
+  TData = Awaited<ReturnType<typeof listGenerations>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListGenerationsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listGenerations>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListGenerationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Takes the visitor's captured photo and a chosen scene, then generates a photoreal image of them enjoying that boat
+ * @summary Create a photo from a visitor snapshot
+ */
+export const getCreateGenerationUrl = () => {
+  return `/api/generations`;
+};
+
+export const createGeneration = async (
+  generationInput: GenerationInput,
+  options?: RequestInit,
+): Promise<Generation> => {
+  return customFetch<Generation>(getCreateGenerationUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generationInput),
+  });
+};
+
+export const getCreateGenerationMutationOptions = <
+  TError = ErrorType<ApiError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createGeneration>>,
+    TError,
+    { data: BodyType<GenerationInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createGeneration>>,
+  TError,
+  { data: BodyType<GenerationInput> },
+  TContext
+> => {
+  const mutationKey = ["createGeneration"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createGeneration>>,
+    { data: BodyType<GenerationInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createGeneration(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateGenerationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createGeneration>>
+>;
+export type CreateGenerationMutationBody = BodyType<GenerationInput>;
+export type CreateGenerationMutationError = ErrorType<ApiError>;
+
+/**
+ * @summary Create a photo from a visitor snapshot
+ */
+export const useCreateGeneration = <
+  TError = ErrorType<ApiError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createGeneration>>,
+    TError,
+    { data: BodyType<GenerationInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createGeneration>>,
+  TError,
+  { data: BodyType<GenerationInput> },
+  TContext
+> => {
+  return useMutation(getCreateGenerationMutationOptions(options));
+};
+
+/**
+ * Returns the current status, photo, and video for a generation
+ * @summary Get a generation
+ */
+export const getGetGenerationUrl = (id: string) => {
+  return `/api/generations/${id}`;
+};
+
+export const getGeneration = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Generation> => {
+  return customFetch<Generation>(getGetGenerationUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetGenerationQueryKey = (id: string) => {
+  return [`/api/generations/${id}`] as const;
+};
+
+export const getGetGenerationQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGeneration>>,
+  TError = ErrorType<ApiError>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getGeneration>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetGenerationQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGeneration>>> = ({
+    signal,
+  }) => getGeneration(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGeneration>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetGenerationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGeneration>>
+>;
+export type GetGenerationQueryError = ErrorType<ApiError>;
+
+/**
+ * @summary Get a generation
+ */
+
+export function useGetGeneration<
+  TData = Awaited<ReturnType<typeof getGeneration>>,
+  TError = ErrorType<ApiError>,
+>(
+  id: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getGeneration>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetGenerationQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Kicks off image-to-video generation for an existing photo generation
+ * @summary Animate a generated photo into a video
+ */
+export const getStartVideoUrl = (id: string) => {
+  return `/api/generations/${id}/video`;
+};
+
+export const startVideo = async (
+  id: string,
+  options?: RequestInit,
+): Promise<Generation> => {
+  return customFetch<Generation>(getStartVideoUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getStartVideoMutationOptions = <
+  TError = ErrorType<ApiError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof startVideo>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof startVideo>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["startVideo"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof startVideo>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return startVideo(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type StartVideoMutationResult = NonNullable<
+  Awaited<ReturnType<typeof startVideo>>
+>;
+
+export type StartVideoMutationError = ErrorType<ApiError>;
+
+/**
+ * @summary Animate a generated photo into a video
+ */
+export const useStartVideo = <
+  TError = ErrorType<ApiError>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof startVideo>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof startVideo>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(getStartVideoMutationOptions(options));
+};
+
+/**
+ * Aggregate counts for the booth dashboard
+ * @summary Booth stats
+ */
+export const getGetBoothStatsUrl = () => {
+  return `/api/booth/stats`;
+};
+
+export const getBoothStats = async (
+  options?: RequestInit,
+): Promise<BoothStats> => {
+  return customFetch<BoothStats>(getGetBoothStatsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetBoothStatsQueryKey = () => {
+  return [`/api/booth/stats`] as const;
+};
+
+export const getGetBoothStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBoothStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBoothStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetBoothStatsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBoothStats>>> = ({
+    signal,
+  }) => getBoothStats({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBoothStats>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetBoothStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBoothStats>>
+>;
+export type GetBoothStatsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Booth stats
+ */
+
+export function useGetBoothStats<
+  TData = Awaited<ReturnType<typeof getBoothStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBoothStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBoothStatsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}

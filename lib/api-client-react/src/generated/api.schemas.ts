@@ -39,6 +39,8 @@ export interface UpsertBrandingDraftRequest {
   secondaryColor: string;
   accentColor: string;
   logoDataUrl?: string | null;
+  bgDataUrl?: string | null;
+  fontDataUrl?: string | null;
   heading: string;
   tagline?: string | null;
 }
@@ -59,6 +61,8 @@ export interface BrandingDraft {
   secondaryColor: string;
   accentColor: string;
   logoDataUrl?: string | null;
+  bgDataUrl?: string | null;
+  fontDataUrl?: string | null;
   heading: string;
   tagline?: string | null;
   status: BrandingDraftStatus;
@@ -97,3 +101,60 @@ export interface CustomUiRequest {
   email: string;
   message: string;
 }
+
+export interface Scene {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+}
+
+export interface GenerationInput {
+  /** @minLength 1 */
+  sceneId: string;
+  /**
+   * Data URI or raw base64 of the visitor's captured photo
+   * @minLength 1
+   */
+  photoBase64: string;
+  visitorName?: string;
+}
+
+export interface Generation {
+  id: string;
+  sceneId: string;
+  sceneName: string;
+  visitorName?: string | null;
+  /** One of pending, ready, failed */
+  photoStatus: string;
+  /** One of idle, pending, ready, failed */
+  videoStatus: string;
+  photoUrl?: string | null;
+  videoUrl?: string | null;
+  error?: string | null;
+  createdAt: string;
+}
+
+export interface SceneCount {
+  sceneId: string;
+  sceneName: string;
+  count: number;
+}
+
+export interface BoothStats {
+  totalCreations: number;
+  videosCreated: number;
+  sceneBreakdown: SceneCount[];
+}
+
+export interface ApiError {
+  error: string;
+}
+
+export type ListGenerationsParams = {
+  /**
+   * @minimum 1
+   * @maximum 50
+   */
+  limit?: number;
+};

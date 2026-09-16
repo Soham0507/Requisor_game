@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { ScrollTicker } from "@/components/ScrollTicker";
@@ -13,6 +13,24 @@ import { CyberCaseStudy } from "@/components/Cyber";
 import { ProfileCard } from "@/components/ProfileCard";
 import { RSAC } from "@/components/RSAC";
 export default function Home() {
+  // Nav links elsewhere in the app (e.g. from /games) land here as "/#id" —
+  // a real page load, so the browser's own anchor-jump races this page's
+  // animated sections and images still settling into their final layout,
+  // and usually ends up short. Re-issue the scroll a few times as things
+  // finish loading instead of a single one-shot attempt.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    scroll();
+    const timers = [100, 400, 1000].map((ms) => setTimeout(scroll, ms));
+    window.addEventListener("load", scroll);
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener("load", scroll);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-white">
       <CursorGrid />

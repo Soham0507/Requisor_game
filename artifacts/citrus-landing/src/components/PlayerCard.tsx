@@ -62,19 +62,19 @@ function PlayerCard({ member, index }: PlayerCardProps) {
       initial={{ opacity: 0, y: 40, scale: 0.9 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.2, duration: 0.6 }}
-      className="relative group"
+      className="relative group h-full"
     >
       {/* Gradient Border Glow - like ::after in original */}
-      <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-br from-[#F20960] via-[#92499B] to-[#0DA2ED] opacity-55   group-hover:opacity-70 transition duration-500" />
+      <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-br from-[#0d9488] via-[#14b8a6] to-[#5eead4] opacity-55   group-hover:opacity-70 transition duration-500" />
 
       {/* Main Gradient Border - like ::before in original */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#F20960] via-[#92499B] to-[#0DA2ED] blur-xl " />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#0d9488] via-[#14b8a6] to-[#5eead4] blur-xl " />
 
       {/* Inner Dark Overlay - like <b> element */}
       <div className="absolute inset-[2px] rounded-2xl bg-black/80 z-10" />
 
       {/* Glass Card Content */}
-      <div className="relative z-20 rounded-2xl p-6 backdrop-blur-sm bg-black/40 overflow-hidden">
+      <div className="relative z-20 h-full flex flex-col rounded-2xl p-6 backdrop-blur-sm bg-black/40 overflow-hidden">
 
         {/* Dynamic Shine Effect */}
         <motion.div
@@ -89,7 +89,7 @@ function PlayerCard({ member, index }: PlayerCardProps) {
           {/* Avatar glow ring */}
           
 
-          <div className="relative w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-[#F20960] via-[#92499B] to-[#0DA2ED] p-[2px]">
+          <div className="relative w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-[#0d9488] via-[#14b8a6] to-[#5eead4] p-[2px]">
             <div className="w-full h-full rounded-full overflow-hidden bg-black/60">
               <img
                 src={member.img}
@@ -106,7 +106,7 @@ function PlayerCard({ member, index }: PlayerCardProps) {
             {member.name}
           </h3>
 
-          <p className="text-sm text-center mb-2 bg-gradient-to-r from-[#F20960] via-[#92499B] to-[#0DA2ED] bg-clip-text text-transparent font-semibold">
+          <p className="text-sm text-center mb-2 bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#5eead4] bg-clip-text text-transparent font-semibold">
             {member.role}
           </p>
 
@@ -116,14 +116,14 @@ function PlayerCard({ member, index }: PlayerCardProps) {
         </div>
 
         {/* CTA Button */}
-        <div className="flex justify-center mt-5" style={{ transform: "translateZ(15px)" }}>
+        <div className="flex justify-center mt-auto pt-5" style={{ transform: "translateZ(15px)" }}>
           <a
             href={member.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="relative px-5 py-2 text-xs font-medium rounded-lg overflow-hidden group/btn transition-all duration-300"
           >
-            <span className="absolute inset-0 bg-gradient-to-br from-[#F20960]/50 via-[#92499B]/50 to-[#0DA2ED]/50 rounded-lg" />
+            <span className="absolute inset-0 bg-gradient-to-br from-[#0d9488]/50 via-[#14b8a6]/50 to-[#5eead4]/50 rounded-lg" />
             <span className="absolute inset-[1px] bg-black/80 rounded-lg" />
             <span className="relative text-white/80 group-hover/btn:text-white transition">
               View Profile →
@@ -135,7 +135,7 @@ function PlayerCard({ member, index }: PlayerCardProps) {
         <div className="mt-5" style={{ transform: "translateZ(10px)" }}>
           <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#F20960] via-[#92499B] to-[#0DA2ED]"
+              className="h-full bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#5eead4]"
               initial={{ width: "0%" }}
               whileInView={{ width: "85%" }}
               transition={{ duration: 1.2, delay: 0.5 + index * 0.1 }}

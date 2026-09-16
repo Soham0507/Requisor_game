@@ -33,6 +33,8 @@ router.post("/branding-drafts", async (req, res) => {
     secondaryColor: body.secondaryColor,
     accentColor: body.accentColor,
     logoDataUrl: body.logoDataUrl ?? null,
+    bgDataUrl: body.bgDataUrl ?? null,
+    fontDataUrl: body.fontDataUrl ?? null,
     heading: body.heading,
     tagline: body.tagline ?? null,
     updatedAt: new Date(),
@@ -75,6 +77,69 @@ router.get("/branding-drafts/:id/logo", async (req, res) => {
     .limit(1);
 
   const match = draft?.logoDataUrl ? /^data:(.+?);base64,(.+)$/.exec(draft.logoDataUrl) : null;
+  if (!match) {
+    res.status(404).end();
+    return;
+  }
+
+  const [, mimeType, base64Data] = match;
+  res.setHeader("Content-Type", mimeType);
+  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.send(Buffer.from(base64Data, "base64"));
+});
+
+// Same trick as /logo above, but for the (optionally much larger) landing
+// screen background image/video — serves it as a real HTTP response with
+// Range support so the browser can seek/stream a video instead of the whole
+// thing landing in memory as one <video src> fetch.
+router.get("/branding-drafts/:id/bg", async (req, res) => {
+  const [draft] = await db
+    .select({ bgDataUrl: brandingDraftsTable.bgDataUrl })
+    .from(brandingDraftsTable)
+    .where(eq(brandingDraftsTable.id, req.params.id))
+    .limit(1);
+
+  const match = draft?.bgDataUrl ? /^data:(.+?);base64,(.+)$/.exec(draft.bgDataUrl) : null;
+  if (!match) {
+    res.status(404).end();
+    return;
+  }
+
+  const [, mimeType, base64Data] = match;
+  const buffer = Buffer.from(base64Data, "base64");
+
+  res.setHeader("Content-Type", mimeType);
+  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.setHeader("Accept-Ranges", "bytes");
+
+  const range = req.headers.range;
+  if (!range) {
+    res.setHeader("Content-Length", buffer.length);
+    res.send(buffer);
+    return;
+  }
+
+  const match2 = /^bytes=(\d+)-(\d*)$/.exec(range);
+  const start = match2 ? Number(match2[1]) : 0;
+  const end = match2 && match2[2] ? Number(match2[2]) : buffer.length - 1;
+
+  res.status(206);
+  res.setHeader("Content-Range", `bytes ${start}-${end}/${buffer.length}`);
+  res.setHeader("Content-Length", end - start + 1);
+  res.send(buffer.subarray(start, end + 1));
+});
+
+// Same trick as /logo above — serves an already-persisted draft's custom
+// uploaded font by URL instead of embedding the base64 data URI in the live
+// link query string.
+router.get("/branding-drafts/:id/font", async (req, res) => {
+  const [draft] = await db
+    .select({ fontDataUrl: brandingDraftsTable.fontDataUrl })
+    .from(brandingDraftsTable)
+    .where(eq(brandingDraftsTable.id, req.params.id))
+    .limit(1);
+
+  const match = draft?.fontDataUrl ? /^data:(.+?);base64,(.+)$/.exec(draft.fontDataUrl) : null;
   if (!match) {
     res.status(404).end();
     return;

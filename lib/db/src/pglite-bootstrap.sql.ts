@@ -41,12 +41,20 @@ CREATE TABLE IF NOT EXISTS branding_drafts (
   secondary_color text not null,
   accent_color text not null,
   logo_data_url text,
+  bg_data_url text,
+  font_data_url text,
   heading text not null,
   tagline text,
   status draft_status not null default 'draft',
   created_at timestamp not null default now(),
   updated_at timestamp not null default now()
 );
+
+-- CREATE TABLE IF NOT EXISTS is a no-op against an already-bootstrapped local
+-- database, so columns added after a dev machine's first run need an
+-- explicit ALTER to actually show up.
+ALTER TABLE branding_drafts ADD COLUMN IF NOT EXISTS bg_data_url text;
+ALTER TABLE branding_drafts ADD COLUMN IF NOT EXISTS font_data_url text;
 
 CREATE TABLE IF NOT EXISTS orders (
   id uuid primary key default gen_random_uuid(),
@@ -65,5 +73,22 @@ CREATE TABLE IF NOT EXISTS custom_ui_requests (
   email text not null,
   message text not null,
   created_at timestamp not null default now()
+);
+
+CREATE TABLE IF NOT EXISTS generations (
+  id uuid primary key default gen_random_uuid(),
+  scene_id text not null,
+  scene_name text not null,
+  visitor_name text,
+  photo_status text not null default 'pending',
+  video_status text not null default 'idle',
+  photo_data text,
+  photo_mime text,
+  video_data text,
+  video_mime text,
+  video_request_id text,
+  error text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 `;

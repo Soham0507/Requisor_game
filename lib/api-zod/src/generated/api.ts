@@ -69,6 +69,8 @@ export const UpsertBrandingDraftBody = zod.object({
   secondaryColor: zod.string(),
   accentColor: zod.string(),
   logoDataUrl: zod.string().nullish(),
+  bgDataUrl: zod.string().nullish(),
+  fontDataUrl: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
 });
@@ -81,6 +83,8 @@ export const UpsertBrandingDraftResponse = zod.object({
   secondaryColor: zod.string(),
   accentColor: zod.string(),
   logoDataUrl: zod.string().nullish(),
+  bgDataUrl: zod.string().nullish(),
+  fontDataUrl: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
   status: zod.enum(["draft", "finalized"]),
@@ -101,6 +105,8 @@ export const GetBrandingDraftResponse = zod.object({
   secondaryColor: zod.string(),
   accentColor: zod.string(),
   logoDataUrl: zod.string().nullish(),
+  bgDataUrl: zod.string().nullish(),
+  fontDataUrl: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
   status: zod.enum(["draft", "finalized"]),
@@ -142,4 +148,103 @@ export const CreateCustomUiRequestResponse = zod.object({
   name: zod.string(),
   email: zod.string(),
   message: zod.string(),
+});
+
+/**
+ * Returns the available boat experiences a visitor can choose from
+ * @summary List boat experiences
+ */
+export const ListScenesResponseItem = zod.object({
+  id: zod.string(),
+  name: zod.string(),
+  tagline: zod.string(),
+  description: zod.string(),
+});
+export const ListScenesResponse = zod.array(ListScenesResponseItem);
+
+/**
+ * Returns the most recent booth creations for the live gallery
+ * @summary Recent creations
+ */
+export const listGenerationsQueryLimitMax = 50;
+
+export const ListGenerationsQueryParams = zod.object({
+  limit: zod.coerce
+    .number()
+    .min(1)
+    .max(listGenerationsQueryLimitMax)
+    .optional(),
+});
+
+export const ListGenerationsResponseItem = zod.object({
+  id: zod.string(),
+  sceneId: zod.string(),
+  sceneName: zod.string(),
+  visitorName: zod.string().nullish(),
+  photoStatus: zod.string().describe("One of pending, ready, failed"),
+  videoStatus: zod.string().describe("One of idle, pending, ready, failed"),
+  photoUrl: zod.string().nullish(),
+  videoUrl: zod.string().nullish(),
+  error: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+export const ListGenerationsResponse = zod.array(ListGenerationsResponseItem);
+
+/**
+ * Takes the visitor's captured photo and a chosen scene, then generates a photoreal image of them enjoying that boat
+ * @summary Create a photo from a visitor snapshot
+ */
+
+export const CreateGenerationBody = zod.object({
+  sceneId: zod.string().min(1),
+  photoBase64: zod
+    .string()
+    .min(1)
+    .describe("Data URI or raw base64 of the visitor's captured photo"),
+  visitorName: zod.string().optional(),
+});
+
+/**
+ * Returns the current status, photo, and video for a generation
+ * @summary Get a generation
+ */
+export const GetGenerationParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+export const GetGenerationResponse = zod.object({
+  id: zod.string(),
+  sceneId: zod.string(),
+  sceneName: zod.string(),
+  visitorName: zod.string().nullish(),
+  photoStatus: zod.string().describe("One of pending, ready, failed"),
+  videoStatus: zod.string().describe("One of idle, pending, ready, failed"),
+  photoUrl: zod.string().nullish(),
+  videoUrl: zod.string().nullish(),
+  error: zod.string().nullish(),
+  createdAt: zod.string(),
+});
+
+/**
+ * Kicks off image-to-video generation for an existing photo generation
+ * @summary Animate a generated photo into a video
+ */
+export const StartVideoParams = zod.object({
+  id: zod.coerce.string(),
+});
+
+/**
+ * Aggregate counts for the booth dashboard
+ * @summary Booth stats
+ */
+export const GetBoothStatsResponse = zod.object({
+  totalCreations: zod.number(),
+  videosCreated: zod.number(),
+  sceneBreakdown: zod.array(
+    zod.object({
+      sceneId: zod.string(),
+      sceneName: zod.string(),
+      count: zod.number(),
+    }),
+  ),
 });

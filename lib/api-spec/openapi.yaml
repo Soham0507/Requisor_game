@@ -16,6 +16,12 @@ tags:
     description: In-progress branding customizations for a game
   - name: custom-ui-requests
     description: Requests for a fully custom UI build
+  - name: scenes
+    description: Boat Booth experience scenes
+  - name: generations
+    description: Boat Booth photo and video generations
+  - name: booth
+    description: Boat Booth dashboard data
 paths:
   /healthz:
     get:
@@ -147,6 +153,143 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CustomUiRequest"
+  /scenes:
+    get:
+      operationId: listScenes
+      tags: [scenes]
+      summary: List boat experiences
+      description: Returns the available boat experiences a visitor can choose from
+      responses:
+        "200":
+          description: List of scenes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scene"
+  /generations:
+    get:
+      operationId: listGenerations
+      tags: [generations]
+      summary: Recent creations
+      description: Returns the most recent booth creations for the live gallery
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: Recent generations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Generation"
+    post:
+      operationId: createGeneration
+      tags: [generations]
+      summary: Create a photo from a visitor snapshot
+      description: Takes the visitor's captured photo and a chosen scene, then generates a photoreal image of them enjoying that boat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerationInput"
+      responses:
+        "201":
+          description: Generation created with photo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Generation"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: Generation provider error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /generations/{id}:
+    get:
+      operationId: getGeneration
+      tags: [generations]
+      summary: Get a generation
+      description: Returns the current status, photo, and video for a generation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The generation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Generation"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /generations/{id}/video:
+    post:
+      operationId: startVideo
+      tags: [generations]
+      summary: Animate a generated photo into a video
+      description: Kicks off image-to-video generation for an existing photo generation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "202":
+          description: Video generation started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Generation"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: Generation provider error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /booth/stats:
+    get:
+      operationId: getBoothStats
+      tags: [booth]
+      summary: Booth stats
+      description: Aggregate counts for the booth dashboard
+      responses:
+        "200":
+          description: Booth stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoothStats"
 components:
   schemas:
     HealthStatus:
@@ -218,6 +361,12 @@ components:
         logoDataUrl:
           type: string
           nullable: true
+        bgDataUrl:
+          type: string
+          nullable: true
+        fontDataUrl:
+          type: string
+          nullable: true
         heading:
           type: string
         tagline:
@@ -246,6 +395,12 @@ components:
         accentColor:
           type: string
         logoDataUrl:
+          type: string
+          nullable: true
+        bgDataUrl:
+          type: string
+          nullable: true
+        fontDataUrl:
           type: string
           nullable: true
         heading:
@@ -329,4 +484,93 @@ components:
         - name
         - email
         - message
+    Scene:
+      type: object
+      required: [id, name, tagline, description]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        tagline:
+          type: string
+        description:
+          type: string
+    GenerationInput:
+      type: object
+      required: [sceneId, photoBase64]
+      properties:
+        sceneId:
+          type: string
+          minLength: 1
+        photoBase64:
+          type: string
+          minLength: 1
+          description: Data URI or raw base64 of the visitor's captured photo
+        visitorName:
+          type: string
+    Generation:
+      type: object
+      required:
+        - id
+        - sceneId
+        - sceneName
+        - photoStatus
+        - videoStatus
+        - createdAt
+      properties:
+        id:
+          type: string
+        sceneId:
+          type: string
+        sceneName:
+          type: string
+        visitorName:
+          type: string
+          nullable: true
+        photoStatus:
+          type: string
+          description: One of pending, ready, failed
+        videoStatus:
+          type: string
+          description: One of idle, pending, ready, failed
+        photoUrl:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+          nullable: true
+        error:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+    BoothStats:
+      type: object
+      required: [totalCreations, videosCreated, sceneBreakdown]
+      properties:
+        totalCreations:
+          type: integer
+        videosCreated:
+          type: integer
+        sceneBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/SceneCount"
+    SceneCount:
+      type: object
+      required: [sceneId, sceneName, count]
+      properties:
+        sceneId:
+          type: string
+        sceneName:
+          type: string
+        count:
+          type: integer
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
 

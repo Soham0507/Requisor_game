@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Monitor, Tablet, Smartphone, AlertTriangle } from "lucide-react";
 import {
   useGetGame,
   useUpsertBrandingDraft,
@@ -11,21 +11,23 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { getDraftToken } from "@/lib/draft-token";
-import { GamePreviewFrame, type BrandThemeMessage } from "@/components/customizer/GamePreviewFrame";
+import { GamePreviewFrame, type BrandThemeMessage, type DeviceSize } from "@/components/customizer/GamePreviewFrame";
 import { BrandingForm } from "@/components/customizer/BrandingForm";
 import { OrderSummaryPanel } from "@/components/customizer/OrderSummaryPanel";
 import { ContactCustomUiDialog } from "@/components/customizer/ContactCustomUiDialog";
+import { MOBILE_UNSUPPORTED, MOBILE_UNSUPPORTED_MESSAGE } from "@/lib/mobile-support";
 
 const SAVE_DEBOUNCE_MS = 600;
 
-// Not DB-backed yet — a small client-side default per game, same spirit as
-// `defaultHeading`/`defaultPrimaryColor` on the `games` table. brandName is
-// kept out of the branding-draft save/finalize payload below (schema has no
-// column for it yet), so it lives only in this page's client-side state.
-const DEFAULT_BRAND_NAMES: Record<string, string> = {
-  "cyber-adventure": "SentinelOne",
-  "basketball-shootout": "AppViewX",
-};
+// "desktop" renders the preview responsively, filling the panel (the
+// original behavior) — tablet/mobile render the iframe at that literal
+// device resolution, scaled to fit, so the embedded game's own CSS/JS sees
+// (and reacts to) that actual viewport size rather than just looking smaller.
+const DEVICE_PRESETS: { id: "desktop" | "tablet" | "mobile"; label: string; icon: typeof Monitor; size: DeviceSize | null }[] = [
+  { id: "desktop", label: "Desktop", icon: Monitor, size: null },
+  { id: "tablet", label: "Tablet", icon: Tablet, size: { width: 820, height: 1180 } },
+  { id: "mobile", label: "Mobile", icon: Smartphone, size: { width: 390, height: 844 } },
+];
 
 // Every game now speaks the BRANDING_CONTRACT.md postMessage protocol (see
 // each game's brand-bridge), so the live preview works for all of them —
@@ -36,7 +38,7 @@ const PREVIEW_BASE_PATHS: Record<string, string> = {
   "cyber-adventure": "/game-previews/cyber-adventure/",
   "basketball-shootout": "/game-previews/basketball-shootout/",
   "gesture-space-war": "/game-previews/gesture-space-war/",
-  "zombie-hunter": "/game-previews/zombie-hunter/",
+  "boat-booth": "/game-previews/boat-booth/",
 };
 
 export default function Customize() {
@@ -46,6 +48,7 @@ export default function Customize() {
   const [theme, setTheme] = useState<BrandThemeMessage | null>(null);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [order, setOrder] = useState<Order | null>(null);
+  const [device, setDevice] = useState<(typeof DEVICE_PRESETS)[number]>(DEVICE_PRESETS[0]);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const { mutate: saveDraft } = useUpsertBrandingDraft();
@@ -58,9 +61,16 @@ export default function Customize() {
         secondaryColor: game.defaultSecondaryColor,
         accentColor: game.defaultAccentColor,
         logoUrl: game.defaultLogoUrl ?? null,
-        brandName: DEFAULT_BRAND_NAMES[game.slug] ?? "",
+        logoSize: 28,
+        brandName: "",
+        brandNameSize: 16,
+        brandNameColor: "#ffffff",
         heading: game.defaultHeading,
+        headingSize: 11,
+        headingColor: "#94a3b8",
         tagline: "",
+        bgUrl: null,
+        fontUrl: null,
       });
     }
   }, [game, theme]);
@@ -82,6 +92,8 @@ export default function Customize() {
             secondaryColor: next.secondaryColor,
             accentColor: next.accentColor,
             logoDataUrl: next.logoUrl,
+            bgDataUrl: next.bgUrl,
+            fontDataUrl: next.fontUrl,
             heading: next.heading,
             tagline: next.tagline,
           },
@@ -108,11 +120,16 @@ export default function Customize() {
     if (!basePath) return null;
     const params = new URLSearchParams({
       brandName: theme.brandName,
+      brandNameSize: String(theme.brandNameSize),
+      brandNameColor: theme.brandNameColor,
       heading: theme.heading,
+      headingSize: String(theme.headingSize),
+      headingColor: theme.headingColor,
       tagline: theme.tagline,
       primaryColor: theme.primaryColor,
       secondaryColor: theme.secondaryColor,
       accentColor: theme.accentColor,
+      logoSize: String(theme.logoSize),
     });
     if (theme.logoUrl) {
       // A user-uploaded logo is a data: URI — far too large to embed
@@ -125,6 +142,20 @@ export default function Customize() {
           ? `${window.location.origin}/api/branding-drafts/${draftId}/logo`
           : theme.logoUrl;
       params.set("logo", logoParam);
+    }
+    if (theme.bgUrl) {
+      const bgParam =
+        theme.bgUrl.startsWith("data:") && draftId
+          ? `${window.location.origin}/api/branding-drafts/${draftId}/bg`
+          : theme.bgUrl;
+      params.set("bg", bgParam);
+    }
+    if (theme.fontUrl) {
+      const fontParam =
+        theme.fontUrl.startsWith("data:") && draftId
+          ? `${window.location.origin}/api/branding-drafts/${draftId}/font`
+          : theme.fontUrl;
+      params.set("font", fontParam);
     }
     return `${window.location.origin}${basePath}?${params.toString()}`;
   }, [game, theme, draftId]);
@@ -151,20 +182,53 @@ export default function Customize() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="container mx-auto px-6 md:px-12 pt-28 pb-24">
-        <Link href="/games" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-white mb-6">
+        <Link href="/games" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft size={14} /> Back to catalog
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-8" style={{ fontFamily: "'PixelGamer', monospace" }}>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
           Customize {game.name}
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-10">
+          <div>
             {PREVIEW_BASE_PATHS[game.slug] ? (
-              <GamePreviewFrame previewBasePath={PREVIEW_BASE_PATHS[game.slug]} theme={theme} />
+              <>
+                <div className="flex items-center justify-center gap-1.5 mb-1.5 rounded-lg border border-border bg-muted/50 p-1 w-fit mx-auto">
+                  {DEVICE_PRESETS.map((preset) => {
+                    const isUnsupportedPreset = preset.id === "mobile" && MOBILE_UNSUPPORTED.has(game.slug);
+                    return (
+                      <Button
+                        key={preset.id}
+                        type="button"
+                        size="sm"
+                        variant={device.id === preset.id ? "default" : "ghost"}
+                        className="gap-1.5"
+                        disabled={isUnsupportedPreset}
+                        onClick={() => setDevice(preset)}
+                        title={isUnsupportedPreset ? MOBILE_UNSUPPORTED_MESSAGE : undefined}
+                        data-testid={`button-preview-${preset.id}`}
+                      >
+                        <preset.icon size={14} />
+                        {preset.label}
+                      </Button>
+                    );
+                  })}
+                </div>
+                {MOBILE_UNSUPPORTED.has(game.slug) && (
+                  <p className="flex items-center justify-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 mb-3 text-center">
+                    <AlertTriangle size={13} className="shrink-0" />
+                    {MOBILE_UNSUPPORTED_MESSAGE}
+                  </p>
+                )}
+                <GamePreviewFrame
+                  previewBasePath={PREVIEW_BASE_PATHS[game.slug]}
+                  theme={theme}
+                  deviceSize={device.size}
+                />
+              </>
             ) : (
-              <div className="rounded-xl border border-white/10 bg-card aspect-video w-full flex items-center justify-center text-center p-8">
+              <div className="rounded-xl border border-border bg-card aspect-[4/3] w-full flex items-center justify-center text-center p-8">
                 <p className="text-muted-foreground text-sm">
                   Live in-game re-skinning isn't wired up for {game.name} yet — logo and heading
                   changes below will still apply once it is. Try{" "}
@@ -175,23 +239,30 @@ export default function Customize() {
                 </p>
               </div>
             )}
-
-            <BrandingForm theme={theme} onChange={handleThemeChange} canvasReskinSupported={game.brandSupport === "full"} />
           </div>
 
           <div className="space-y-6">
-            <OrderSummaryPanel
-              gameName={game.name}
-              priceCents={game.priceCents}
-              order={order}
-              isFinalizing={isFinalizing}
-              onFinalize={handleFinalize}
-              liveLink={liveLink}
+            <BrandingForm
+              theme={theme}
+              onChange={handleThemeChange}
+              canvasReskinSupported={game.brandSupport === "full"}
+              gameSlug={game.slug}
             />
             <div className="text-center">
               <ContactCustomUiDialog gameId={game.id} />
             </div>
           </div>
+        </div>
+
+        <div className="mt-10">
+          <OrderSummaryPanel
+            gameName={game.name}
+            priceCents={game.priceCents}
+            order={order}
+            isFinalizing={isFinalizing}
+            onFinalize={handleFinalize}
+            liveLink={liveLink}
+          />
         </div>
       </main>
       <Footer />

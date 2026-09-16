@@ -15,6 +15,14 @@ export const brandingDraftsTable = pgTable("branding_drafts", {
   secondaryColor: text("secondary_color").notNull(),
   accentColor: text("accent_color").notNull(),
   logoDataUrl: text("logo_data_url"),
+  // Per-game opt-in (currently basketball-shootout only) — the landing
+  // screen's background image/video, as a data: URI. Mime type is read
+  // back from the URI itself when serving, so no separate "type" column.
+  bgDataUrl: text("bg_data_url"),
+  // Custom uploaded font (woff2/woff/ttf/otf) applied to the brand name and
+  // game title text, as a data: URI. Universal across every game, unlike
+  // bgDataUrl above.
+  fontDataUrl: text("font_data_url"),
   heading: text("heading").notNull(),
   tagline: text("tagline"),
   status: draftStatusEnum("status").notNull().default("draft"),

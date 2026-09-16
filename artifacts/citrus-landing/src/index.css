@@ -1,21 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
-
-@font-face {
-  font-family: 'PixelGamer';
-  src: url('/fonts/PixelGamer-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
-}
-
-@font-face {
-  font-family: 'gGameTC';
-  src: url('/fonts/gGameTC.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
@@ -84,35 +68,35 @@
 }
 
 :root {
-  --background: 240 10% 4%;
-  --foreground: 0 0% 98%;
+  --background: 210 20% 98%;
+  --foreground: 222 47% 11%;
 
-  --border: 240 6% 15%;
-  --input: 240 6% 15%;
-  --ring: 24 100% 50%;
+  --border: 214 32% 89%;
+  --input: 214 32% 89%;
+  --ring: 173 80% 36%;
 
-  --card: 240 6% 6%;
-  --card-foreground: 0 0% 98%;
-  --card-border: 240 6% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --card-border: 214 32% 89%;
 
-  --popover: 240 6% 6%;
-  --popover-foreground: 0 0% 98%;
-  --popover-border: 240 6% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 214 32% 89%;
 
-  --primary: 24 100% 50%;
+  --primary: 173 80% 36%;
   --primary-foreground: 0 0% 100%;
-  
-  --secondary: 199 100% 50%;
-  --secondary-foreground: 0 0% 100%;
 
-  --muted: 240 6% 12%;
-  --muted-foreground: 240 5% 65%;
+  --secondary: 210 20% 95%;
+  --secondary-foreground: 222 47% 11%;
 
-  --accent: 24 100% 50%;
+  --muted: 210 20% 95%;
+  --muted-foreground: 215 16% 42%;
+
+  --accent: 173 80% 36%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 72% 48%;
+  --destructive-foreground: 0 0% 100%;
 
   --app-font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
@@ -121,27 +105,27 @@
 }
 
 .dark {
-  --background: 240 10% 4%;
-  --foreground: 0 0% 98%;
-  --border: 240 6% 15%;
-  --input: 240 6% 15%;
-  --ring: 24 100% 50%;
-  --card: 240 6% 6%;
-  --card-foreground: 0 0% 98%;
-  --card-border: 240 6% 15%;
-  --popover: 240 6% 6%;
-  --popover-foreground: 0 0% 98%;
-  --popover-border: 240 6% 15%;
-  --primary: 24 100% 50%;
+  --background: 210 20% 98%;
+  --foreground: 222 47% 11%;
+  --border: 214 32% 89%;
+  --input: 214 32% 89%;
+  --ring: 173 80% 36%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --card-border: 214 32% 89%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --popover-border: 214 32% 89%;
+  --primary: 173 80% 36%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 199 100% 50%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 240 6% 12%;
-  --muted-foreground: 240 5% 65%;
-  --accent: 24 100% 50%;
+  --secondary: 210 20% 95%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 20% 95%;
+  --muted-foreground: 215 16% 42%;
+  --accent: 173 80% 36%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
+  --destructive: 0 72% 48%;
+  --destructive-foreground: 0 0% 100%;
 }
 
 @layer base {
@@ -150,6 +134,5 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'gGameTC', sans-serif;
   }
 }

@@ -137,13 +137,10 @@ const projects = [
 function SectionTitle({ title, subtitle }: any) {
   return (
     <div className="text-center mb-16">
-      <h2
-        className="text-4xl md:text-6xl font-bold text-white mb-4"
-        style={{ fontFamily: "'PixelGamer', monospace" }}
-      >
+      <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
         {title}
       </h2>
-      <p className="text-green-400/70 font-mono">{subtitle}</p>
+      <p className="text-primary/80 font-mono">{subtitle}</p>
     </div>
   );
 }
@@ -154,9 +151,8 @@ function CaseCard({ item, index }: any) {
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.15 }}
-      className="group bg-black/60  rounded-2xl overflow-hidden 
-      backdrop-blur-md hover:border-green-400/40 
-      hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all duration-300" style={{
+      className="group bg-card rounded-2xl overflow-hidden
+      hover:shadow-lg transition-all duration-300" style={{
         border: `2px solid ${item.colors[0]}40`,
         boxShadow: `0 0 30px ${item.colors[1]}30`
       }}
@@ -187,8 +183,8 @@ function CaseCard({ item, index }: any) {
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
         >
           <div
-            className="px-6 py-3 bg-green-500 text-black font-bold rounded-lg 
-          shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:scale-110 transition"
+            className="px-6 py-3 bg-primary text-primary-foreground font-bold rounded-lg
+          shadow-lg hover:scale-110 transition"
           >
             ▶ Play Demo
           </div>
@@ -221,23 +217,19 @@ function CaseCard({ item, index }: any) {
 
         {/* Text */}
         <div className="space-y-3 text-sm">
-          <p className="text-white/70">
-            <span 
+          <p className="text-foreground/70">
+            <span
               style={{ color: item.colors[2] }}
               className="uppercase text-xs"
             >
               Challenge:
             </span> {item.challenge}
           </p>
-          <p className="text-white/70">
-            <span className="text-white/40">Solution:</span> {item.solution}
+          <p className="text-foreground/70">
+            <span className="text-muted-foreground">Solution:</span> {item.solution}
           </p>
-          <p className="text-green-400/80">
-            <p 
-              style={{ color: item.colors[1] }}
-            >
-              <span style={{ color: item.colors[2] }}>Outcome:</span> {item.outcome}
-            </p> 
+          <p style={{ color: item.colors[1] }}>
+            <span style={{ color: item.colors[2] }}>Outcome:</span> {item.outcome}
           </p>
         </div>
       </div>
@@ -247,13 +239,12 @@ function CaseCard({ item, index }: any) {
 
 export function CyberCaseStudy() {
   return (
-    <section className="bg-black text-white relative overflow-hidden">
+    <section className="bg-muted text-foreground relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-[#020617] to-black" />
       <div
-        className="absolute inset-0 opacity-20 
-        bg-[linear-gradient(rgba(0,255,0,0.08)_1px,transparent_1px),
-        linear-gradient(90deg,rgba(0,255,0,0.08)_1px,transparent_1px)]
+        className="absolute inset-0 opacity-40
+        bg-[linear-gradient(rgba(0,0,0,0.05)_1px,transparent_1px),
+        linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px)]
         bg-[size:50px_50px]"
       />
 
@@ -265,7 +256,7 @@ export function CyberCaseStudy() {
         />
 
         {/* INTRO */}
-        <div className="max-w-3xl mx-auto text-center mb-20 text-white/70 leading-relaxed">
+        <div className="max-w-3xl mx-auto text-center mb-20 text-muted-foreground leading-relaxed">
           We design and develop interactive web-based games specifically for
           cybersecurity companies, helping them attract, engage, and retain
           audiences at exhibitions and events.
@@ -308,14 +299,14 @@ export function CyberCaseStudy() {
           <h3 className="text-3xl font-bold mb-4">
             Want a Cyber Game for Your Brand?
           </h3>
-          <p className="text-white/60 mb-6">
+          <p className="text-muted-foreground mb-6">
             Let’s build an interactive experience that attracts and engages your
             audience.
           </p>
           <a
             href="#contact"
-            className="px-8 py-4 bg-green-500 text-black font-bold rounded-xl 
-            hover:bg-green-400 transition shadow-[0_0_30px_rgba(34,197,94,0.5)]"
+            className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl
+            hover:opacity-90 transition shadow-lg"
           >
             Get Your Custom Game
           </a>

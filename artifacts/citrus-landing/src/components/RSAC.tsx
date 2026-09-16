@@ -22,11 +22,11 @@ export function RSAC() {
   const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
-    <section className="min-h-screen bg-black text-white py-20 px-6 md:px-12 relative overflow-hidden">
+    <section className="min-h-screen bg-background text-foreground py-20 px-6 md:px-12 relative overflow-hidden">
 
       {/* Background glow */}
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-orange-500/20 blur-[120px]" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/20 blur-[140px]" />
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary/10 blur-[120px]" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[140px]" />
 
       <motion.div className="max-w-6xl mx-auto relative z-10" style={{ y }}>
 
@@ -37,12 +37,12 @@ export function RSAC() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
           >
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4" style={{ fontFamily: "'PixelGamer', monospace" }}>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
             RSAC Booth Showcase
           </h1>
 
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            Our interactive <span className="text-orange-400 font-semibold">Basketball Game</span> was deployed live at the AppViewX booth during RSAC 2026 driving engagement and attracting visitors.
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
+            Our interactive <span className="text-primary font-semibold">Basketball Game</span> was deployed live at the AppViewX booth during RSAC 2026 driving engagement and attracting visitors.
           </p>
         </motion.div>
 
@@ -60,7 +60,7 @@ export function RSAC() {
               variants={revealVariant}
               whileHover={{ scale: 1.03, rotateX: 3, rotateY: -3 }}
               transition={{ type: "spring", stiffness: 120 }}
-              className="group relative rounded-2xl overflow-hidden border border-white/10 perspective-[1000px]"
+              className="group relative rounded-2xl overflow-hidden border border-border perspective-[1000px]"
             >
               {/* Glow sweep on reveal */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl" />
@@ -73,7 +73,7 @@ export function RSAC() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-              <div className="absolute bottom-4 left-4">
+              <div className="absolute bottom-4 left-4 text-white">
                 <p className="text-sm text-gray-300">Live Booth Setup</p>
                 <h3 className="text-xl font-bold">AppViewX @ RSAC</h3>
               </div>
@@ -84,7 +84,7 @@ export function RSAC() {
               variants={revealVariant}
               whileHover={{ scale: 1.03, rotateX: 3, rotateY: -3 }}
               transition={{ type: "spring", stiffness: 120 }}
-              className="group relative rounded-2xl overflow-hidden border border-white/10 perspective-[1000px]"
+              className="group relative rounded-2xl overflow-hidden border border-border perspective-[1000px]"
             >
               {/* Glow sweep on reveal */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl" />
@@ -109,7 +109,7 @@ export function RSAC() {
               variants={revealVariant}
               whileHover={{ scale: 1.03, rotateX: 3, rotateY: -3 }}
               transition={{ type: "spring", stiffness: 120 }}
-              className="group relative rounded-2xl overflow-hidden border border-white/10 perspective-[1000px]"
+              className="group relative rounded-2xl overflow-hidden border border-border perspective-[1000px]"
             >
               {/* Glow sweep on reveal */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl" />
@@ -124,7 +124,7 @@ export function RSAC() {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-            <div className="absolute bottom-4 left-4">
+            <div className="absolute bottom-4 left-4 text-white">
               <p className="text-sm text-gray-300">Gameplay in Action</p>
               <h3 className="text-xl font-bold">Basketball Game</h3>
             </div>
@@ -135,7 +135,7 @@ export function RSAC() {
               variants={revealVariant}
               whileHover={{ scale: 1.03, rotateX: 3, rotateY: -3 }}
               transition={{ type: "spring", stiffness: 120 }}
-              className="group relative rounded-2xl overflow-hidden border border-white/10 perspective-[1000px]"
+              className="group relative rounded-2xl overflow-hidden border border-border perspective-[1000px]"
             >
               {/* Glow sweep on reveal */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl" />
@@ -150,7 +150,7 @@ export function RSAC() {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
 
-            <div className="absolute bottom-6 left-6">
+            <div className="absolute bottom-6 left-6 text-white">
               <p className="text-sm text-gray-300">User Engagement</p>
               <h3 className="text-2xl font-bold">
                 Real Visitors Playing at Booth
@@ -166,7 +166,7 @@ export function RSAC() {
           transition={{ duration: 0.6 }}
           className="mt-20 text-center"
         >
-          <div className="inline-block px-6 py-3 rounded-xl border border-orange-500/30 bg-orange-500/10 text-orange-300 text-sm tracking-widest uppercase">
+          <div className="inline-block px-6 py-3 rounded-xl border border-primary/30 bg-primary/10 text-primary text-sm tracking-widest uppercase">
             Real Deployment • Real Engagement • Real Impact
           </div>
         </motion.div>
