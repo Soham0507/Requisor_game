@@ -151,6 +151,27 @@ export const CreateCustomUiRequestResponse = zod.object({
 });
 
 /**
+ * Resolves gameSlug to the game's id server-side — the embedded game knows its own slug, not the row's database id
+ * @summary Submit player info captured at game-over
+ */
+export const CreatePlayerSubmissionBody = zod.object({
+  gameSlug: zod.string(),
+  orderId: zod.string().nullish(),
+  name: zod.string(),
+  email: zod.string(),
+  extra: zod.record(zod.string(), zod.unknown()).nullish(),
+});
+
+export const CreatePlayerSubmissionResponse = zod.object({
+  id: zod.string(),
+  gameId: zod.string(),
+  orderId: zod.string().nullish(),
+  name: zod.string(),
+  email: zod.string(),
+  extra: zod.record(zod.string(), zod.unknown()).nullish(),
+});
+
+/**
  * Returns the available boat experiences a visitor can choose from
  * @summary List boat experiences
  */

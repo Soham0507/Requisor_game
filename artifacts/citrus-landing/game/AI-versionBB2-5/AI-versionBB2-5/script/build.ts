@@ -36,7 +36,13 @@ async function buildAll() {
   await rm("dist", { recursive: true, force: true });
 
   console.log("building client...");
-  await viteBuild();
+  // BASE_PATH is set by the monorepo's scripts/build-games.mjs when this
+  // game is built as part of the site (base `/game-previews/basketball-shootout/`,
+  // not `/` — the built asset paths need it, or every <script>/<link> 404s
+  // once served from that sub-path). viteBuild() calls vite's build API
+  // directly rather than the `vite build` CLI, so a `--base` CLI flag here
+  // was always silently ignored; passed as a config override instead.
+  await viteBuild(process.env.BASE_PATH ? { base: process.env.BASE_PATH } : {});
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));

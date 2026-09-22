@@ -32,6 +32,7 @@ export function GameOver({ stats, onRestart }: GameOverProps) {
   const tip = SECURITY_TIPS[Math.floor(Math.random() * SECURITY_TIPS.length)];
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [saved, setSaved] = useState(false);
   const [board, setBoard] = useState<LeaderboardEntry[]>([]);
@@ -40,8 +41,10 @@ export function GameOver({ stats, onRestart }: GameOverProps) {
     setBoard(getLeaderboard());
   }, []);
 
+  const canSave = name.trim().length > 0 && email.trim().length > 0;
+
   const handleSave = () => {
-    if (!name.trim()) return;
+    if (!canSave) return;
     const entry: LeaderboardEntry = {
       name: name.trim(),
       company: company.trim(),
@@ -54,6 +57,27 @@ export function GameOver({ stats, onRestart }: GameOverProps) {
     const updated = saveToLeaderboard(entry);
     setBoard(updated);
     setSaved(true);
+
+    // Also send it to the shared player_submissions table (api-server), so
+    // it's a real lead an operator can see across every game, not just
+    // this browser's own localStorage leaderboard. `orderId` is only
+    // present when this build was opened through a finalized live link
+    // (see citrus-landing's customize.tsx) — absent on a raw/dev preview,
+    // which is fine, the row just isn't tied to a specific brand order.
+    const orderId = new URLSearchParams(window.location.search).get("orderId");
+    fetch("/api/player-submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        gameSlug: "cyber-adventure",
+        orderId,
+        name: entry.name,
+        email: email.trim(),
+        extra: { company: entry.company, score, level, maxCombo, attacksDefeated },
+      }),
+    }).catch(() => {
+      /* best-effort — the local leaderboard save above already succeeded */
+    });
   };
 
   return (
@@ -230,7 +254,20 @@ export function GameOver({ stats, onRestart }: GameOverProps) {
                     background: "rgba(255,255,255,0.06)",
                     border: "1px solid rgba(75, 85, 99, 0.5)",
                   }}
-                  onKeyDown={(e) => e.key === "Enter" && handleSave()}
+                  onKeyDown={(e) => e.key === "Enter" && canSave && handleSave()}
+                />
+                <input
+                  type="email"
+                  placeholder="Email *"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  maxLength={80}
+                  className="w-full px-3 py-2 rounded-lg text-sm text-white outline-none"
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(75, 85, 99, 0.5)",
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && canSave && handleSave()}
                 />
                 <input
                   type="text"
@@ -250,17 +287,17 @@ export function GameOver({ stats, onRestart }: GameOverProps) {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={handleSave}
-                    disabled={!name.trim()}
+                    disabled={!canSave}
                     className="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all"
                     style={{
-                      background: name.trim()
+                      background: canSave
                         ? "linear-gradient(135deg, #0e4f94, #1d6fdb)"
                         : "rgba(75,85,99,0.3)",
-                      border: name.trim()
+                      border: canSave
                         ? "1px solid #3b82f6"
                         : "1px solid rgba(75,85,99,0.4)",
-                      color: name.trim() ? "white" : "#6b7280",
-                      cursor: name.trim() ? "pointer" : "not-allowed",
+                      color: canSave ? "white" : "#6b7280",
+                      cursor: canSave ? "pointer" : "not-allowed",
                     }}
                   >
                     Save Score

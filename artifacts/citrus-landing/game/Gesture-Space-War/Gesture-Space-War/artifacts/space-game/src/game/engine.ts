@@ -103,6 +103,44 @@ export function saveScore(name: string, score: number): LeaderEntry[] {
   return top;
 }
 
+// Captured at game-over alongside (but separate from) the 3-letter
+// leaderboard initials above — a real name + email so a follow-up is
+// possible. Persisted client-side for now; wiring this to a real
+// backend/database is a separate follow-up.
+const LS_PLAYER_INFO = "space-survivor-player-info";
+export interface PlayerInfoEntry { name: string; email: string; score: number; date: string }
+export function savePlayerInfo(name: string, email: string, score: number): void {
+  const entry: PlayerInfoEntry = { name: name.trim(), email: email.trim(), score, date: new Date().toISOString() };
+  try {
+    const raw = localStorage.getItem(LS_PLAYER_INFO);
+    const existing: PlayerInfoEntry[] = raw ? JSON.parse(raw) : [];
+    localStorage.setItem(LS_PLAYER_INFO, JSON.stringify([...existing, entry]));
+  } catch {
+    /* ignore — nothing else here depends on this succeeding */
+  }
+
+  // Also send it to the shared player_submissions table (api-server), so
+  // it's a real lead an operator can see across every game, not just this
+  // browser's own localStorage. `orderId` is only present when this build
+  // was opened through a finalized live link (see citrus-landing's
+  // customize.tsx) — absent on a raw/dev preview, which is fine, the row
+  // just isn't tied to a specific brand order.
+  const orderId = new URLSearchParams(window.location.search).get("orderId");
+  fetch("/api/player-submissions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      gameSlug: "gesture-space-war",
+      orderId,
+      name: entry.name,
+      email: entry.email,
+      extra: { score },
+    }),
+  }).catch(() => {
+    /* best-effort — the local leaderboard save above already succeeded */
+  });
+}
+
 // ── Factories ─────────────────────────────────────────────────────────────
 function makeAsteroid(W: number, H: number, id: number, speed: number, forceTop = false): Asteroid {
   const r = rnd(12, 30);

@@ -1532,6 +1532,35 @@ const ResultsScreen = ({
       shotsMade: stats.shotsMade,
       outagesPrevented: stats.outagesPrevented,
     });
+
+    // Also send it to the shared player_submissions table (citrus-landing's
+    // api-server) so it's a real lead an operator can see across every
+    // game, not just this game's own /api/scores leaderboard. `orderId` is
+    // only present when this build was opened through a finalized live
+    // link (see citrus-landing's customize.tsx) — absent on a raw/dev
+    // preview, which is fine, the row just isn't tied to a specific brand
+    // order.
+    const orderId = new URLSearchParams(window.location.search).get("orderId");
+    fetch("/api/player-submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        gameSlug: "basketball-shootout",
+        orderId,
+        name: playerInfo.name,
+        email: playerInfo.email,
+        extra: {
+          title: playerInfo.title,
+          company: playerInfo.company,
+          score: stats.score,
+          shotsTaken: stats.shotsTaken,
+          shotsMade: stats.shotsMade,
+          outagesPrevented: stats.outagesPrevented,
+        },
+      }),
+    }).catch(() => {
+      /* best-effort — the mutation above already handles its own local fallback */
+    });
   };
 
   return (

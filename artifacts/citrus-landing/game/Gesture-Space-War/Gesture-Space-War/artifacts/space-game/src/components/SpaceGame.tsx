@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { initGame, startGame, tick, getLeaderboard, saveScore } from "../game/engine";
+import { initGame, startGame, tick, getLeaderboard, saveScore, savePlayerInfo } from "../game/engine";
 import type { LeaderEntry } from "../game/engine";
 import { render, drawLandmarks, renderBossWarning } from "../game/renderer";
 import { useHandGesture } from "../hooks/useHandGesture";
@@ -94,6 +94,8 @@ export default function SpaceGame() {
   const [showVideo, setShowVideo]     = useState(true);
   const [showNameEntry, setShowNameEntry] = useState(false);
   const [playerName, setPlayerName]   = useState("");
+  const [fullName, setFullName]       = useState("");
+  const [playerEmail, setPlayerEmail] = useState("");
   const [leaderboard, setLeaderboard] = useState<LeaderEntry[]>([]);
   const [scoreSaved, setScoreSaved]   = useState(false);
 
@@ -247,14 +249,17 @@ export default function SpaceGame() {
     }
   }, [isLoading, start, scoreSaved]);
 
+  const canSaveScore = playerName.length > 0 && fullName.trim().length > 0 && playerEmail.trim().length > 0;
   const handleSaveScore = useCallback(() => {
+    if (!canSaveScore) return;
     const finalName = playerName.trim().toUpperCase().padEnd(3, "·").slice(0, 3);
     const currentScore = stateRef.current?.score ?? 0;
     const updated = saveScore(finalName, currentScore);
+    savePlayerInfo(fullName, playerEmail, currentScore);
     setLeaderboard(updated);
     setShowNameEntry(false);
     setScoreSaved(true);
-  }, [playerName]);
+  }, [canSaveScore, playerName, fullName, playerEmail]);
 
   const enableGesture = useCallback((e: React.MouseEvent) => { e.stopPropagation(); start(); }, [start]);
 
@@ -518,11 +523,30 @@ export default function SpaceGame() {
               ))}
             </div>
 
-            {/* name entry */}
+            {/* player info + leaderboard initials */}
             {showNameEntry && !scoreSaved && (
               <div className="w-full flex flex-col items-center gap-2 pointer-events-auto"
                 onClick={e => e.stopPropagation()}>
-                <div className="font-mono text-[10px] tracking-widest text-blue-400 opacity-60">ENTER YOUR NAME</div>
+                <div className="font-mono text-[10px] tracking-widest text-blue-400 opacity-60">YOUR INFO</div>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={e => setFullName(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && canSaveScore) handleSaveScore(); }}
+                  className="font-mono text-sm text-center w-full max-w-[280px] rounded-lg px-3 py-2 outline-none"
+                  style={{ background: "rgba(10,30,80,0.8)", color: "#88ddff", caretColor: "#88ddff" }}
+                  placeholder="Full name"
+                />
+                <input
+                  type="email"
+                  value={playerEmail}
+                  onChange={e => setPlayerEmail(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && canSaveScore) handleSaveScore(); }}
+                  className="font-mono text-sm text-center w-full max-w-[280px] rounded-lg px-3 py-2 outline-none"
+                  style={{ background: "rgba(10,30,80,0.8)", color: "#88ddff", caretColor: "#88ddff" }}
+                  placeholder="Email"
+                />
+                <div className="font-mono text-[10px] tracking-widest text-blue-400 opacity-60 mt-1">LEADERBOARD INITIALS</div>
                 <div className="flex items-center gap-3">
                   <input
                     autoFocus
@@ -530,7 +554,7 @@ export default function SpaceGame() {
                     maxLength={3}
                     value={playerName}
                     onChange={e => setPlayerName(e.target.value.toUpperCase().replace(/[^A-Z]/g, ""))}
-                    onKeyDown={e => { if (e.key === "Enter" && playerName.length > 0) handleSaveScore(); }}
+                    onKeyDown={e => { if (e.key === "Enter" && canSaveScore) handleSaveScore(); }}
                     className="font-mono text-2xl font-black text-center w-24 rounded-lg px-2 py-1.5 tracking-widest outline-none"
                     style={{
                       background: "rgba(10,30,80,0.8)",
@@ -539,12 +563,14 @@ export default function SpaceGame() {
                     placeholder="AAA"
                   />
                   <button
-                    onClick={e => { e.stopPropagation(); if (playerName.length > 0) handleSaveScore(); }}
+                    onClick={e => { e.stopPropagation(); if (canSaveScore) handleSaveScore(); }}
+                    disabled={!canSaveScore}
                     className="font-mono text-xs font-bold rounded-lg px-3 py-2 transition-opacity hover:opacity-80"
                     style={{
-                      background: playerName.length > 0 ? "rgba(50,120,255,0.28)" : "rgba(50,50,80,0.3)",
+                      background: canSaveScore ? "rgba(50,120,255,0.28)" : "rgba(50,50,80,0.3)",
                       color: "#88aaff",
-                      opacity: playerName.length > 0 ? 1 : 0.4,
+                      opacity: canSaveScore ? 1 : 0.4,
+                      cursor: canSaveScore ? "pointer" : "not-allowed",
                     }}>
                     SAVE
                   </button>

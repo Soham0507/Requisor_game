@@ -17,13 +17,16 @@ import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-// `envBase` games read BASE_PATH from the environment in their vite config;
-// `flagBase` games take it as a `--base` CLI flag instead. That split is a
-// quirk of the games having been scaffolded from different templates.
+// `envBase` games read BASE_PATH from the environment in their vite config.
+// `flagBase` mode (a `--base` CLI flag) still exists below for a game whose
+// build genuinely goes through the `vite build` CLI, but nothing currently
+// uses it — basketball-shootout used to, until its build turned out to call
+// vite's build() API directly (script/build.ts), which silently ignores CLI
+// flags; it now reads BASE_PATH like the others instead.
 const GAMES = [
   { slug: "space-shooter-1", pkg: "@workspace/game-space-shooter-1", dist: "artifacts/games/space-shooter-1/dist/public", mode: "envBase" },
   { slug: "cyber-adventure", pkg: "@workspace/gesturesec-runner", dist: "artifacts/citrus-landing/game/Cybergame/artifacts/gesturesec-runner/dist/public", mode: "envBase" },
-  { slug: "basketball-shootout", pkg: "rest-express", dist: "artifacts/citrus-landing/game/AI-versionBB2-5/AI-versionBB2-5/dist/public", mode: "flagBase" },
+  { slug: "basketball-shootout", pkg: "rest-express", dist: "artifacts/citrus-landing/game/AI-versionBB2-5/AI-versionBB2-5/dist/public", mode: "envBase" },
   { slug: "gesture-space-war", pkg: "@workspace/space-game", dist: "artifacts/citrus-landing/game/Gesture-Space-War/Gesture-Space-War/artifacts/space-game/dist/public", mode: "envBase" },
   { slug: "boat-booth", pkg: "@workspace/boat-booth", dist: "artifacts/citrus-landing/game/On-The-Fly-Video/On-The-Fly-Video/artifacts/boat-booth/dist/public", mode: "envBase" },
 ];

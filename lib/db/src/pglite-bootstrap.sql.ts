@@ -91,4 +91,17 @@ CREATE TABLE IF NOT EXISTS generations (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- One shared table for every game's end-of-game "player info" form (all
+-- games except Boat Booth) rather than a table per game — see
+-- schema/player-submissions.ts for why.
+CREATE TABLE IF NOT EXISTS player_submissions (
+  id uuid primary key default gen_random_uuid(),
+  game_id uuid not null references games(id),
+  order_id uuid references orders(id),
+  name text not null,
+  email text not null,
+  extra jsonb,
+  created_at timestamptz not null default now()
+);
 `;

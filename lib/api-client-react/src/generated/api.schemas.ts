@@ -102,6 +102,29 @@ export interface CustomUiRequest {
   message: string;
 }
 
+export type CreatePlayerSubmissionRequestExtra = {
+  [key: string]: unknown;
+} | null;
+
+export interface CreatePlayerSubmissionRequest {
+  gameSlug: string;
+  orderId?: string | null;
+  name: string;
+  email: string;
+  extra?: CreatePlayerSubmissionRequestExtra;
+}
+
+export type PlayerSubmissionExtra = { [key: string]: unknown } | null;
+
+export interface PlayerSubmission {
+  id: string;
+  gameId: string;
+  orderId?: string | null;
+  name: string;
+  email: string;
+  extra?: PlayerSubmissionExtra;
+}
+
 export interface Scene {
   id: string;
   name: string;

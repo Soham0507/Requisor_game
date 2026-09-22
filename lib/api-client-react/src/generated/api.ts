@@ -21,6 +21,7 @@ import type {
   BoothStats,
   BrandingDraft,
   CreateCustomUiRequestRequest,
+  CreatePlayerSubmissionRequest,
   CustomUiRequest,
   FinalizeBrandingDraftRequest,
   Game,
@@ -29,6 +30,7 @@ import type {
   HealthStatus,
   ListGenerationsParams,
   Order,
+  PlayerSubmission,
   Scene,
   UpsertBrandingDraftRequest,
 } from "./api.schemas";
@@ -608,6 +610,94 @@ export const useCreateCustomUiRequest = <
   TContext
 > => {
   return useMutation(getCreateCustomUiRequestMutationOptions(options));
+};
+
+/**
+ * Resolves gameSlug to the game's id server-side — the embedded game knows its own slug, not the row's database id
+ * @summary Submit player info captured at game-over
+ */
+export const getCreatePlayerSubmissionUrl = () => {
+  return `/api/player-submissions`;
+};
+
+export const createPlayerSubmission = async (
+  createPlayerSubmissionRequest: CreatePlayerSubmissionRequest,
+  options?: RequestInit,
+): Promise<PlayerSubmission> => {
+  return customFetch<PlayerSubmission>(getCreatePlayerSubmissionUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createPlayerSubmissionRequest),
+  });
+};
+
+export const getCreatePlayerSubmissionMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPlayerSubmission>>,
+    TError,
+    { data: BodyType<CreatePlayerSubmissionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createPlayerSubmission>>,
+  TError,
+  { data: BodyType<CreatePlayerSubmissionRequest> },
+  TContext
+> => {
+  const mutationKey = ["createPlayerSubmission"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createPlayerSubmission>>,
+    { data: BodyType<CreatePlayerSubmissionRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createPlayerSubmission(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreatePlayerSubmissionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createPlayerSubmission>>
+>;
+export type CreatePlayerSubmissionMutationBody =
+  BodyType<CreatePlayerSubmissionRequest>;
+export type CreatePlayerSubmissionMutationError = ErrorType<void>;
+
+/**
+ * @summary Submit player info captured at game-over
+ */
+export const useCreatePlayerSubmission = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createPlayerSubmission>>,
+    TError,
+    { data: BodyType<CreatePlayerSubmissionRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createPlayerSubmission>>,
+  TError,
+  { data: BodyType<CreatePlayerSubmissionRequest> },
+  TContext
+> => {
+  return useMutation(getCreatePlayerSubmissionMutationOptions(options));
 };
 
 /**

@@ -21,6 +21,18 @@ export interface LeaderboardEntry {
   date: string;
 }
 
+// Captured at game-over alongside (but separate from) the leaderboard
+// callsign — an email so a real follow-up is possible, not just an 8-char
+// arcade handle. Persisted client-side for now; wiring this to a real
+// backend/database is a separate follow-up.
+export interface PlayerInfoEntry {
+  name: string;
+  email: string;
+  score: number;
+  level: number;
+  date: string;
+}
+
 export interface Settings {
   soundEnabled: boolean;
   musicEnabled: boolean;
@@ -41,10 +53,12 @@ interface GameState {
   setStatus: (s: GameStatus) => void;
   resetGame: () => void;
   submitScore: (name: string) => void;
+  submitPlayerInfo: (name: string, email: string) => void;
   updateSettings: (patch: Partial<Settings>) => void;
 }
 
 const STORAGE_KEY = "game-dashboard:state-v1";
+const PLAYER_INFO_STORAGE_KEY = "game-dashboard:player-info-v1";
 
 const DEFAULT_SETTINGS: Settings = {
   soundEnabled: true,
@@ -133,6 +147,47 @@ export function GameProvider({ children }: { children: ReactNode }) {
     [score, level, leaderboard, persist],
   );
 
+  const submitPlayerInfo = useCallback(
+    (name: string, email: string) => {
+      const entry: PlayerInfoEntry = {
+        name: name.trim(),
+        email: email.trim(),
+        score,
+        level,
+        date: new Date().toISOString(),
+      };
+      try {
+        const raw = localStorage.getItem(PLAYER_INFO_STORAGE_KEY);
+        const existing: PlayerInfoEntry[] = raw ? JSON.parse(raw) : [];
+        localStorage.setItem(PLAYER_INFO_STORAGE_KEY, JSON.stringify([...existing, entry]));
+      } catch {
+        /* ignore — nothing else here depends on this succeeding */
+      }
+
+      // Also send it to the shared player_submissions table (api-server),
+      // so it's a real lead an operator can see across every game, not
+      // just this browser's own localStorage. `orderId` is only present
+      // when this build was opened through a finalized live link (see
+      // customize.tsx) — absent on a raw/dev preview, which is fine, the
+      // row just isn't tied to a specific brand order.
+      const orderId = new URLSearchParams(window.location.search).get("orderId");
+      fetch("/api/player-submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          gameSlug: "space-shooter-1",
+          orderId,
+          name: entry.name,
+          email: entry.email,
+          extra: { score, level },
+        }),
+      }).catch(() => {
+        /* best-effort — the local leaderboard save above already succeeded */
+      });
+    },
+    [score, level],
+  );
+
   const updateSettings = useCallback(
     (patch: Partial<Settings>) => {
       const next = { ...settings, ...patch };
@@ -156,9 +211,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setStatus,
       resetGame,
       submitScore,
+      submitPlayerInfo,
       updateSettings,
     }),
-    [score, health, level, status, leaderboard, settings, resetGame, submitScore, updateSettings],
+    [score, health, level, status, leaderboard, settings, resetGame, submitScore, submitPlayerInfo, updateSettings],
   );
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

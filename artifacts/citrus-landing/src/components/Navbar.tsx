@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Home, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 
+// Shared header for /games and /customize/:slug. It used to carry a
+// Home/Games/Team/Contact menu (plus a mobile hamburger dropdown for it),
+// but those links pointed at #team/#contact anchors that only ever existed
+// on the old landing page — the current one (src/pages/home.tsx) has no
+// such sections, so they silently went nowhere. Replaced with a single Home
+// button back to "/"; the games catalog itself is one click from there
+// ("View our games"), and the customize page already has its own
+// "Back to catalog" link.
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,78 +32,32 @@ export function Navbar() {
       }`}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group"> <img src="/logo/dino.png" alt="Citrus Innovations logo" className="w-10 h-10  rounded-md" />
+        <Link href="/" className="flex items-center gap-2 group">
+          <img src="/logo/dino.png" alt="Citrus Innovations logo" className="w-10 h-10 rounded-md" />
           <span className="text-xl md:text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
             RequisorAI
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {["Home", "Games", "Team", "Contact"].map((item) =>
-            item === "Games" ? (
-              <Link
-                key={item}
-                href="/games"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
-              >
-                {item}
-              </Link>
-            ) : (
-              <a
-                key={item}
-                href={`/#${item.toLowerCase()}`}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
-              >
-                {item}
-              </a>
-            ),
-          )}
-        </nav>
-
-        {/* Mobile Nav Toggle */}
-        <button
-          className="md:hidden text-foreground"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-background border-b border-border shadow-2xl py-4 flex flex-col md:hidden"
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            title="Toggle light/dark mode"
+            className="w-10 h-10 rounded-full grid place-items-center bg-muted border border-border text-foreground hover:bg-secondary transition-colors"
           >
-            {["Home", "Games", "Team", "Contact"].map((item) =>
-              item === "Games" ? (
-                <Link
-                  key={item}
-                  href="/games"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-6 py-4 text-base font-medium text-foreground border-b border-border hover:bg-muted transition-colors"
-                >
-                  {item}
-                </Link>
-              ) : (
-                <a
-                  key={item}
-                  href={`/#${item.toLowerCase()}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-6 py-4 text-base font-medium text-foreground border-b border-border hover:bg-muted transition-colors"
-                >
-                  {item}
-                </a>
-              ),
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {theme === "light" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground border border-primary-border px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Home size={16} />
+            Home
+          </Link>
+        </div>
+      </div>
     </header>
   );
 }

@@ -157,8 +157,21 @@ export default function Customize() {
           : theme.fontUrl;
       params.set("font", fontParam);
     }
+    // Every other param here is just the current branding *values* — two
+    // users who both leave everything at its defaults would otherwise
+    // produce byte-for-byte identical links despite being separate orders
+    // (draftToken already keeps their underlying drafts apart, see
+    // draft-token.ts; this is only about the shared link text). Stamping
+    // the finalized order's own id in makes every live link unique the
+    // moment it's actually handed out, regardless of whether the branding
+    // itself is unique. Ignored by every game's brand-bridge (it only reads
+    // known keys — see game/BRANDING_CONTRACT.md), so it's a no-op for
+    // playback, just an identity marker for the link itself.
+    if (order) {
+      params.set("orderId", order.id);
+    }
     return `${window.location.origin}${basePath}?${params.toString()}`;
-  }, [game, theme, draftId]);
+  }, [game, theme, draftId, order]);
 
   if (isLoading || !theme) {
     return (

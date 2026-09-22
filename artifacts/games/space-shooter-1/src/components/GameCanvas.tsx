@@ -70,12 +70,13 @@ export default function GameCanvas() {
   const shipImgRef    = useRef<HTMLImageElement | null>(null);
 
   const { status, setStatus, setScore, setHealth, setLevel,
-          score, level, health, settings, submitScore, resetGame } = useGame();
+          score, level, health, settings, submitScore, submitPlayerInfo, resetGame } = useGame();
 
   const stateRef = useRef({ status, score, level, health, settings });
   stateRef.current = { status, score, level, health, settings };
 
   const [submittedName, setSubmittedName] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
   // ── React-visible HUD state (combo + active power-ups) ──
@@ -646,9 +647,11 @@ export default function GameCanvas() {
      UI handlers
      ================================================================ */
   const handleStart        = () => resetGame();
+  const canSubmit           = submittedName.trim().length > 0 && submittedEmail.trim().length > 0;
   const handleSubmit       = () => {
-    if (scoreSubmitted) return;
-    submitScore(submittedName || "PILOT");
+    if (scoreSubmitted || !canSubmit) return;
+    submitScore(submittedName);
+    submitPlayerInfo(submittedName, submittedEmail);
     setScoreSubmitted(true);
   };
 
@@ -744,9 +747,9 @@ export default function GameCanvas() {
               <div>Level: <span style={{ color: "var(--neon-violet)", fontWeight: 700 }}>{level}</span></div>
             </div>
             {!scoreSubmitted ? (
-              <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 6, width: 260 }}>
                 <input
-                  type="text" placeholder="Enter callsign"
+                  type="text" placeholder="Callsign (for the leaderboard)"
                   value={submittedName}
                   onChange={(e) => setSubmittedName(e.target.value.toUpperCase())}
                   maxLength={8}
@@ -754,10 +757,31 @@ export default function GameCanvas() {
                   style={{
                     background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)",
                     color: "var(--text)", padding: "10px 14px", borderRadius: 10, outline: "none",
-                    letterSpacing: "0.15em", fontWeight: 600, width: 180, textAlign: "center",
+                    letterSpacing: "0.15em", fontWeight: 600, textAlign: "center",
                   }}
+                  onKeyDown={(e) => e.key === "Enter" && canSubmit && handleSubmit()}
                 />
-                <button className="neon-btn magenta" onClick={handleSubmit} data-testid="btn-submit-score">Save Score</button>
+                <input
+                  type="email" placeholder="Email"
+                  value={submittedEmail}
+                  onChange={(e) => setSubmittedEmail(e.target.value)}
+                  data-testid="input-email"
+                  style={{
+                    background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)",
+                    color: "var(--text)", padding: "10px 14px", borderRadius: 10, outline: "none",
+                    fontWeight: 500, textAlign: "center",
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && canSubmit && handleSubmit()}
+                />
+                <button
+                  className="neon-btn magenta"
+                  onClick={handleSubmit}
+                  disabled={!canSubmit}
+                  data-testid="btn-submit-score"
+                  style={{ opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? "pointer" : "not-allowed" }}
+                >
+                  Save Score
+                </button>
               </div>
             ) : (
               <div style={{ color: "var(--neon-lime)", fontWeight: 600 }}>Score saved to leaderboard.</div>

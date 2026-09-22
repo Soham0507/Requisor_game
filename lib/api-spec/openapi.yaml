@@ -16,6 +16,8 @@ tags:
     description: In-progress branding customizations for a game
   - name: custom-ui-requests
     description: Requests for a fully custom UI build
+  - name: player-submissions
+    description: Player info captured at game-over by a brandable game (every game except Boat Booth)
   - name: scenes
     description: Boat Booth experience scenes
   - name: generations
@@ -153,6 +155,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CustomUiRequest"
+  /player-submissions:
+    post:
+      operationId: createPlayerSubmission
+      tags: [player-submissions]
+      summary: Submit player info captured at game-over
+      description: Resolves gameSlug to the game's id server-side — the embedded game knows its own slug, not the row's database id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePlayerSubmissionRequest"
+      responses:
+        "200":
+          description: The created player submission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSubmission"
+        "404":
+          description: Game not found
   /scenes:
     get:
       operationId: listScenes
@@ -484,6 +507,49 @@ components:
         - name
         - email
         - message
+    CreatePlayerSubmissionRequest:
+      type: object
+      properties:
+        gameSlug:
+          type: string
+        orderId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        email:
+          type: string
+        extra:
+          type: object
+          additionalProperties: true
+          nullable: true
+      required:
+        - gameSlug
+        - name
+        - email
+    PlayerSubmission:
+      type: object
+      properties:
+        id:
+          type: string
+        gameId:
+          type: string
+        orderId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        email:
+          type: string
+        extra:
+          type: object
+          additionalProperties: true
+          nullable: true
+      required:
+        - id
+        - gameId
+        - name
+        - email
     Scene:
       type: object
       required: [id, name, tagline, description]
