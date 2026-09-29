@@ -91,6 +91,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BrandingDraft"
+    get:
+      operationId: findBrandingDraft
+      tags: [branding-drafts]
+      summary: Look up an in-progress branding draft for a game + draft token
+      description: Lets the customize page restore a customer's unfinished customization after a page reload, since draftToken (stored in localStorage) is the only thing it has on mount.
+      parameters:
+        - name: gameId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: draftToken
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The in-progress draft, if one exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandingDraft"
+        "404":
+          description: No in-progress draft for this game + draft token
   /branding-drafts/{id}:
     get:
       operationId: getBrandingDraft
@@ -390,6 +415,14 @@ components:
         fontDataUrl:
           type: string
           nullable: true
+        quiz:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/QuizQuestion"
+        brandName:
+          type: string
+          nullable: true
         heading:
           type: string
         tagline:
@@ -426,6 +459,14 @@ components:
         fontDataUrl:
           type: string
           nullable: true
+        quiz:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/QuizQuestion"
+        brandName:
+          type: string
+          nullable: true
         heading:
           type: string
         tagline:
@@ -443,6 +484,44 @@ components:
         - accentColor
         - heading
         - status
+    QuizOption:
+      type: object
+      description: Lexus Energy Quiz only — one answer choice and how many points it adds to each of the 6 fixed outcome models.
+      properties:
+        text:
+          type: string
+        scores:
+          type: object
+          properties:
+            ES:
+              type: integer
+            NX:
+              type: integer
+            RX:
+              type: integer
+            RZ:
+              type: integer
+            TX:
+              type: integer
+            TZ:
+              type: integer
+          required: [ES, NX, RX, RZ, TX, TZ]
+      required:
+        - text
+        - scores
+    QuizQuestion:
+      type: object
+      description: Lexus Energy Quiz only — one question and its answer options.
+      properties:
+        text:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuizOption"
+      required:
+        - text
+        - options
     FinalizeBrandingDraftRequest:
       type: object
       properties:

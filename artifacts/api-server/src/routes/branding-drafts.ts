@@ -35,6 +35,8 @@ router.post("/branding-drafts", async (req, res) => {
     logoDataUrl: body.logoDataUrl ?? null,
     bgDataUrl: body.bgDataUrl ?? null,
     fontDataUrl: body.fontDataUrl ?? null,
+    quiz: body.quiz ?? null,
+    brandName: body.brandName ?? null,
     heading: body.heading,
     tagline: body.tagline ?? null,
     updatedAt: new Date(),
@@ -49,6 +51,37 @@ router.post("/branding-drafts", async (req, res) => {
     : await db.insert(brandingDraftsTable).values(values).returning();
 
   res.json(UpsertBrandingDraftResponse.parse(draft));
+});
+
+// Lets the customize page restore a customer's unfinished customization
+// after a page reload — draftToken (localStorage) + gameId is the only
+// thing it has on mount, before it ever learns a draft's id.
+router.get("/branding-drafts", async (req, res) => {
+  const gameId = String(req.query.gameId ?? "");
+  const draftToken = String(req.query.draftToken ?? "");
+  if (!gameId || !draftToken) {
+    res.status(404).json({ error: "Draft not found" });
+    return;
+  }
+
+  const [draft] = await db
+    .select()
+    .from(brandingDraftsTable)
+    .where(
+      and(
+        eq(brandingDraftsTable.gameId, gameId),
+        eq(brandingDraftsTable.draftToken, draftToken),
+        eq(brandingDraftsTable.status, "draft"),
+      ),
+    )
+    .limit(1);
+
+  if (!draft) {
+    res.status(404).json({ error: "Draft not found" });
+    return;
+  }
+
+  res.json(GetBrandingDraftResponse.parse(draft));
 });
 
 router.get("/branding-drafts/:id", async (req, res) => {
@@ -149,6 +182,26 @@ router.get("/branding-drafts/:id/font", async (req, res) => {
   res.setHeader("Content-Type", mimeType);
   res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
   res.send(Buffer.from(base64Data, "base64"));
+});
+
+// Serves an already-persisted draft's custom quiz (Lexus Energy Quiz only)
+// as plain JSON, by URL — the live link references this instead of
+// embedding the questions/options directly in the query string, which could
+// grow arbitrarily large with enough custom questions.
+router.get("/branding-drafts/:id/quiz", async (req, res) => {
+  const [draft] = await db
+    .select({ quiz: brandingDraftsTable.quiz })
+    .from(brandingDraftsTable)
+    .where(eq(brandingDraftsTable.id, req.params.id))
+    .limit(1);
+
+  if (!draft?.quiz) {
+    res.status(404).end();
+    return;
+  }
+
+  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.json(draft.quiz);
 });
 
 router.post("/branding-drafts/:id/finalize", async (req, res) => {

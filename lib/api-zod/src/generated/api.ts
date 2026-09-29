@@ -71,6 +71,35 @@ export const UpsertBrandingDraftBody = zod.object({
   logoDataUrl: zod.string().nullish(),
   bgDataUrl: zod.string().nullish(),
   fontDataUrl: zod.string().nullish(),
+  quiz: zod
+    .array(
+      zod
+        .object({
+          text: zod.string(),
+          options: zod.array(
+            zod
+              .object({
+                text: zod.string(),
+                scores: zod.object({
+                  ES: zod.number(),
+                  NX: zod.number(),
+                  RX: zod.number(),
+                  RZ: zod.number(),
+                  TX: zod.number(),
+                  TZ: zod.number(),
+                }),
+              })
+              .describe(
+                "Lexus Energy Quiz only — one answer choice and how many points it adds to each of the 6 fixed outcome models.",
+              ),
+          ),
+        })
+        .describe(
+          "Lexus Energy Quiz only — one question and its answer options.",
+        ),
+    )
+    .nullish(),
+  brandName: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
 });
@@ -85,6 +114,88 @@ export const UpsertBrandingDraftResponse = zod.object({
   logoDataUrl: zod.string().nullish(),
   bgDataUrl: zod.string().nullish(),
   fontDataUrl: zod.string().nullish(),
+  quiz: zod
+    .array(
+      zod
+        .object({
+          text: zod.string(),
+          options: zod.array(
+            zod
+              .object({
+                text: zod.string(),
+                scores: zod.object({
+                  ES: zod.number(),
+                  NX: zod.number(),
+                  RX: zod.number(),
+                  RZ: zod.number(),
+                  TX: zod.number(),
+                  TZ: zod.number(),
+                }),
+              })
+              .describe(
+                "Lexus Energy Quiz only — one answer choice and how many points it adds to each of the 6 fixed outcome models.",
+              ),
+          ),
+        })
+        .describe(
+          "Lexus Energy Quiz only — one question and its answer options.",
+        ),
+    )
+    .nullish(),
+  brandName: zod.string().nullish(),
+  heading: zod.string(),
+  tagline: zod.string().nullish(),
+  status: zod.enum(["draft", "finalized"]),
+});
+
+/**
+ * Lets the customize page restore a customer's unfinished customization after a page reload, since draftToken (stored in localStorage) is the only thing it has on mount.
+ * @summary Look up an in-progress branding draft for a game + draft token
+ */
+export const FindBrandingDraftQueryParams = zod.object({
+  gameId: zod.coerce.string(),
+  draftToken: zod.coerce.string(),
+});
+
+export const FindBrandingDraftResponse = zod.object({
+  id: zod.string(),
+  gameId: zod.string(),
+  draftToken: zod.string(),
+  primaryColor: zod.string(),
+  secondaryColor: zod.string(),
+  accentColor: zod.string(),
+  logoDataUrl: zod.string().nullish(),
+  bgDataUrl: zod.string().nullish(),
+  fontDataUrl: zod.string().nullish(),
+  quiz: zod
+    .array(
+      zod
+        .object({
+          text: zod.string(),
+          options: zod.array(
+            zod
+              .object({
+                text: zod.string(),
+                scores: zod.object({
+                  ES: zod.number(),
+                  NX: zod.number(),
+                  RX: zod.number(),
+                  RZ: zod.number(),
+                  TX: zod.number(),
+                  TZ: zod.number(),
+                }),
+              })
+              .describe(
+                "Lexus Energy Quiz only — one answer choice and how many points it adds to each of the 6 fixed outcome models.",
+              ),
+          ),
+        })
+        .describe(
+          "Lexus Energy Quiz only — one question and its answer options.",
+        ),
+    )
+    .nullish(),
+  brandName: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
   status: zod.enum(["draft", "finalized"]),
@@ -107,6 +218,35 @@ export const GetBrandingDraftResponse = zod.object({
   logoDataUrl: zod.string().nullish(),
   bgDataUrl: zod.string().nullish(),
   fontDataUrl: zod.string().nullish(),
+  quiz: zod
+    .array(
+      zod
+        .object({
+          text: zod.string(),
+          options: zod.array(
+            zod
+              .object({
+                text: zod.string(),
+                scores: zod.object({
+                  ES: zod.number(),
+                  NX: zod.number(),
+                  RX: zod.number(),
+                  RZ: zod.number(),
+                  TX: zod.number(),
+                  TZ: zod.number(),
+                }),
+              })
+              .describe(
+                "Lexus Energy Quiz only — one answer choice and how many points it adds to each of the 6 fixed outcome models.",
+              ),
+          ),
+        })
+        .describe(
+          "Lexus Energy Quiz only — one question and its answer options.",
+        ),
+    )
+    .nullish(),
+  brandName: zod.string().nullish(),
   heading: zod.string(),
   tagline: zod.string().nullish(),
   status: zod.enum(["draft", "finalized"]),

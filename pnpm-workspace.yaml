@@ -50,6 +50,7 @@ packages:
   - artifacts/citrus-landing/game/Cybergame/artifacts/gesturesec-runner
   - artifacts/citrus-landing/game/Gesture-Space-War/Gesture-Space-War/artifacts/space-game
   - artifacts/citrus-landing/game/On-The-Fly-Video/On-The-Fly-Video/artifacts/boat-booth
+  - artifacts/citrus-landing/game/Lexus
 
 catalog:
   '@replit/vite-plugin-cartographer': ^0.5.1

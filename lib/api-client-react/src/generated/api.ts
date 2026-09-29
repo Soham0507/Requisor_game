@@ -24,6 +24,7 @@ import type {
   CreatePlayerSubmissionRequest,
   CustomUiRequest,
   FinalizeBrandingDraftRequest,
+  FindBrandingDraftParams,
   Game,
   Generation,
   GenerationInput,
@@ -349,6 +350,104 @@ export const useUpsertBrandingDraft = <
 > => {
   return useMutation(getUpsertBrandingDraftMutationOptions(options));
 };
+
+/**
+ * Lets the customize page restore a customer's unfinished customization after a page reload, since draftToken (stored in localStorage) is the only thing it has on mount.
+ * @summary Look up an in-progress branding draft for a game + draft token
+ */
+export const getFindBrandingDraftUrl = (params: FindBrandingDraftParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/branding-drafts?${stringifiedParams}`
+    : `/api/branding-drafts`;
+};
+
+export const findBrandingDraft = async (
+  params: FindBrandingDraftParams,
+  options?: RequestInit,
+): Promise<BrandingDraft> => {
+  return customFetch<BrandingDraft>(getFindBrandingDraftUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getFindBrandingDraftQueryKey = (
+  params?: FindBrandingDraftParams,
+) => {
+  return [`/api/branding-drafts`, ...(params ? [params] : [])] as const;
+};
+
+export const getFindBrandingDraftQueryOptions = <
+  TData = Awaited<ReturnType<typeof findBrandingDraft>>,
+  TError = ErrorType<void>,
+>(
+  params: FindBrandingDraftParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof findBrandingDraft>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindBrandingDraftQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof findBrandingDraft>>
+  > = ({ signal }) => findBrandingDraft(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof findBrandingDraft>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type FindBrandingDraftQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findBrandingDraft>>
+>;
+export type FindBrandingDraftQueryError = ErrorType<void>;
+
+/**
+ * @summary Look up an in-progress branding draft for a game + draft token
+ */
+
+export function useFindBrandingDraft<
+  TData = Awaited<ReturnType<typeof findBrandingDraft>>,
+  TError = ErrorType<void>,
+>(
+  params: FindBrandingDraftParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof findBrandingDraft>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getFindBrandingDraftQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Get a branding draft by id

@@ -3,6 +3,7 @@ import { Link, useParams } from "wouter";
 import { ArrowLeft, Monitor, Tablet, Smartphone, AlertTriangle } from "lucide-react";
 import {
   useGetGame,
+  useFindBrandingDraft,
   useUpsertBrandingDraft,
   useFinalizeBrandingDraft,
   type Order,
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { getDraftToken } from "@/lib/draft-token";
 import { GamePreviewFrame, type BrandThemeMessage, type DeviceSize } from "@/components/customizer/GamePreviewFrame";
 import { BrandingForm } from "@/components/customizer/BrandingForm";
+import { LexusQuizEditor, DEFAULT_LEXUS_QUIZ } from "@/components/customizer/LexusQuizEditor";
 import { OrderSummaryPanel } from "@/components/customizer/OrderSummaryPanel";
 import { ContactCustomUiDialog } from "@/components/customizer/ContactCustomUiDialog";
 import { MOBILE_UNSUPPORTED, MOBILE_UNSUPPORTED_MESSAGE } from "@/lib/mobile-support";
@@ -29,16 +31,18 @@ const DEVICE_PRESETS: { id: "desktop" | "tablet" | "mobile"; label: string; icon
   { id: "mobile", label: "Mobile", icon: Smartphone, size: { width: 390, height: 844 } },
 ];
 
-// Every game now speaks the BRANDING_CONTRACT.md postMessage protocol (see
-// each game's brand-bridge), so the live preview works for all of them —
-// not just the one `games` row currently marked brandSupport "full". Preview
-// bundles are built into citrus-landing/public/game-previews/<slug>/.
+// Every game here speaks the BRANDING_CONTRACT.md postMessage protocol (see
+// each game's brand-bridge). lexus-energy-quiz's own brand-bridge (staged by
+// scripts/stage-lexus-preview.mjs) only understands `logoUrl` and `quiz` so
+// far — the rest of the fields below don't do anything inside it yet.
+// Preview bundles are built into citrus-landing/public/game-previews/<slug>/.
 const PREVIEW_BASE_PATHS: Record<string, string> = {
   "space-shooter-1": "/game-previews/space-shooter-1/",
   "cyber-adventure": "/game-previews/cyber-adventure/",
   "basketball-shootout": "/game-previews/basketball-shootout/",
   "gesture-space-war": "/game-previews/gesture-space-war/",
   "boat-booth": "/game-previews/boat-booth/",
+  "lexus-energy-quiz": "/game-previews/lexus-energy-quiz/",
 };
 
 export default function Customize() {
@@ -54,28 +58,59 @@ export default function Customize() {
   const { mutate: saveDraft } = useUpsertBrandingDraft();
   const { mutate: finalizeDraft, isPending: isFinalizing } = useFinalizeBrandingDraft();
 
+  const draftToken = useMemo(() => getDraftToken(), []);
+
+  // draftToken (localStorage) + gameId is the only thing the page has on
+  // mount, before it ever learns a draft's id — look up whether this
+  // browser already has an unfinished draft for this game so a reload
+  // doesn't silently wipe a customer's in-progress logo/colors/quiz back
+  // to the game's defaults.
+  const { data: existingDraft, isFetched: isDraftFetched } = useFindBrandingDraft(
+    { gameId: game?.id ?? "", draftToken },
+    { query: { enabled: !!game, retry: false } },
+  );
+
   useEffect(() => {
-    if (game && !theme) {
+    if (!game || theme || !isDraftFetched) return;
+    if (existingDraft) {
       setTheme({
-        primaryColor: game.defaultPrimaryColor,
-        secondaryColor: game.defaultSecondaryColor,
-        accentColor: game.defaultAccentColor,
-        logoUrl: game.defaultLogoUrl ?? null,
+        primaryColor: existingDraft.primaryColor,
+        secondaryColor: existingDraft.secondaryColor,
+        accentColor: existingDraft.accentColor,
+        logoUrl: existingDraft.logoDataUrl ?? null,
         logoSize: 28,
-        brandName: "",
+        brandName: existingDraft.brandName ?? "",
         brandNameSize: 16,
         brandNameColor: "#ffffff",
-        heading: game.defaultHeading,
+        heading: existingDraft.heading,
         headingSize: 11,
         headingColor: "#94a3b8",
-        tagline: "",
-        bgUrl: null,
-        fontUrl: null,
+        tagline: existingDraft.tagline ?? "",
+        bgUrl: existingDraft.bgDataUrl ?? null,
+        fontUrl: existingDraft.fontDataUrl ?? null,
+        quiz: existingDraft.quiz ?? null,
       });
+      setDraftId(existingDraft.id);
+      return;
     }
-  }, [game, theme]);
-
-  const draftToken = useMemo(() => getDraftToken(), []);
+    setTheme({
+      primaryColor: game.defaultPrimaryColor,
+      secondaryColor: game.defaultSecondaryColor,
+      accentColor: game.defaultAccentColor,
+      logoUrl: game.defaultLogoUrl ?? null,
+      logoSize: 28,
+      brandName: "",
+      brandNameSize: 16,
+      brandNameColor: "#ffffff",
+      heading: game.defaultHeading,
+      headingSize: 11,
+      headingColor: "#94a3b8",
+      tagline: "",
+      bgUrl: null,
+      fontUrl: null,
+      quiz: null,
+    });
+  }, [game, theme, isDraftFetched, existingDraft]);
 
   const handleThemeChange = (next: BrandThemeMessage) => {
     setTheme(next);
@@ -94,6 +129,8 @@ export default function Customize() {
             logoDataUrl: next.logoUrl,
             bgDataUrl: next.bgUrl,
             fontDataUrl: next.fontUrl,
+            quiz: next.quiz ?? null,
+            brandName: next.brandName || null,
             heading: next.heading,
             tagline: next.tagline,
           },
@@ -156,6 +193,13 @@ export default function Customize() {
           ? `${window.location.origin}/api/branding-drafts/${draftId}/font`
           : theme.fontUrl;
       params.set("font", fontParam);
+    }
+    if (theme.quiz && draftId) {
+      // Same reasoning as logo/bg/font above — a fully custom quiz could
+      // have far more questions/options than fits comfortably in a URL, so
+      // the live link references the persisted draft's quiz by URL instead
+      // of embedding it inline.
+      params.set("quiz", `${window.location.origin}/api/branding-drafts/${draftId}/quiz`);
     }
     // Every other param here is just the current branding *values* — two
     // users who both leave everything at its defaults would otherwise
@@ -261,6 +305,12 @@ export default function Customize() {
               canvasReskinSupported={game.brandSupport === "full"}
               gameSlug={game.slug}
             />
+            {game.slug === "lexus-energy-quiz" && (
+              <LexusQuizEditor
+                quiz={theme.quiz ?? DEFAULT_LEXUS_QUIZ}
+                onChange={(quiz) => handleThemeChange({ ...theme, quiz })}
+              />
+            )}
             <div className="text-center">
               <ContactCustomUiDialog gameId={game.id} />
             </div>
@@ -270,7 +320,6 @@ export default function Customize() {
         <div className="mt-10">
           <OrderSummaryPanel
             gameName={game.name}
-            priceCents={game.priceCents}
             order={order}
             isFinalizing={isFinalizing}
             onFinalize={handleFinalize}
