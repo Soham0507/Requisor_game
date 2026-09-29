@@ -7,7 +7,7 @@
 // router can serve it the same way.
 //
 // The source HTML/manifest/service-worker all reference their assets with
-// root-absolute paths (`/vehicles/ES.png`), which only works when the app
+// root-absolute paths (`/icons/icon-192.png`), which only works when the app
 // owns the whole domain. Served from a sub-path
 // (`/game-previews/lexus-energy-quiz/`) those 404, so this script rewrites
 // them to relative paths in the staged copy — the original source files
@@ -35,18 +35,6 @@ const ASSET_PATHS = [
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/apple-touch-icon.png",
-  "/vehicles/ES.png",
-  "/vehicles/NX.png",
-  "/vehicles/RX.png",
-  "/vehicles/RZ.png",
-  "/vehicles/TX.png",
-  "/vehicles/TZ.png",
-  "/qr/ES.png",
-  "/qr/NX.png",
-  "/qr/RX.png",
-  "/qr/RZ.png",
-  "/qr/TX.png",
-  "/qr/TZ.png",
 ];
 
 function relativize(source) {
@@ -77,7 +65,7 @@ writeFileSync(path.join(outDir, "manifest.json"), manifest);
 let sw = relativize(readFileSync(path.join(srcDir, "sw.js"), "utf8"));
 writeFileSync(path.join(outDir, "sw.js"), sw);
 
-for (const dir of ["icons", "vehicles", "qr"]) {
+for (const dir of ["icons"]) {
   cpSync(path.join(srcDir, dir), path.join(outDir, dir), { recursive: true });
 }
 

@@ -295,36 +295,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── GET /vehicles/* — optimized car images ──────────────────────
-  if (url.startsWith("/vehicles/")) {
-    const name = path.basename(url);
-    if (!/^[\w.-]+\.png$/.test(name)) { res.writeHead(404); res.end(""); return; }
-    fs.readFile(path.join(__dirname, "vehicles", name), (err, data) => {
-      if (err) { res.writeHead(404); res.end(""); return; }
-      res.writeHead(200, {
-        "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=86400"
-      });
-      res.end(data);
-    });
-    return;
-  }
-
-  // ── GET /qr/* — car-specific QR code images ─────────────────────
-  if (url.startsWith("/qr/")) {
-    const name = path.basename(url);
-    if (!/^[\w.-]+\.png$/.test(name)) { res.writeHead(404); res.end(""); return; }
-    fs.readFile(path.join(__dirname, "qr", name), (err, data) => {
-      if (err) { res.writeHead(404); res.end(""); return; }
-      res.writeHead(200, {
-        "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=86400"
-      });
-      res.end(data);
-    });
-    return;
-  }
-
   // ── GET / — main quiz ───────────────────────────────────────────
   fs.readFile(MAIN, "utf8", (err, data) => {
     if (err) { res.writeHead(500); res.end("Error loading page"); return; }

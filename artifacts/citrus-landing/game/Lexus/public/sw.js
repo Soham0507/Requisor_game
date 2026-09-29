@@ -5,18 +5,18 @@ var STATIC = [
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/apple-touch-icon.png",
-  "vehicles/ES.png",
-  "vehicles/NX.png",
-  "vehicles/RZ.png",
-  "vehicles/RX.png",
-  "vehicles/TX.png",
-  "vehicles/TZ.png",
-  "qr/ES.png",
-  "qr/NX.png",
-  "qr/RZ.png",
-  "qr/RX.png",
-  "qr/TX.png",
-  "qr/TZ.png"
+  "/vehicles/ES.png",
+  "/vehicles/NX.png",
+  "/vehicles/RZ.png",
+  "/vehicles/RX.png",
+  "/vehicles/TX.png",
+  "/vehicles/TZ.png",
+  "/qr/ES.png",
+  "/qr/NX.png",
+  "/qr/RZ.png",
+  "/qr/RX.png",
+  "/qr/TX.png",
+  "/qr/TZ.png"
 ];
 
 self.addEventListener("install", function (e) {
